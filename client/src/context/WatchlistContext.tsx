@@ -7,6 +7,8 @@ interface WatchlistContextValue {
   items: Movie[];
   ids: Set<string>;
   loading: boolean;
+  error: string | null;
+  pendingIds: Set<string>;
   toggle: (movie: Movie) => Promise<void>;
   refresh: () => Promise<void>;
 }
@@ -17,6 +19,8 @@ export const WatchlistProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [items, setItems] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
 
   const refresh = useCallback(async () => {
     if (!user) {
@@ -27,6 +31,9 @@ export const WatchlistProvider = ({ children }: { children: ReactNode }) => {
     try {
       const data = await fetchWatchlist();
       setItems(data);
+      setError(null);
+    } catch {
+      setError('Could not load your list. Please refresh and try again.');
     } finally {
       setLoading(false);
     }
@@ -38,23 +45,36 @@ export const WatchlistProvider = ({ children }: { children: ReactNode }) => {
 
   const toggle = useCallback(
     async (movie: Movie) => {
+      if (pendingIds.has(movie.id)) return;
       const exists = items.some((m) => m.id === movie.id);
-      if (exists) {
-        await removeFromWatchlist(movie.id);
-        setItems((prev) => prev.filter((m) => m.id !== movie.id));
-      } else {
-        await addToWatchlist(movie.id);
-        setItems((prev) => [...prev, movie]);
+      setPendingIds((previous) => new Set(previous).add(movie.id));
+      try {
+        if (exists) {
+          await removeFromWatchlist(movie.id);
+          setItems((prev) => prev.filter((m) => m.id !== movie.id));
+        } else {
+          await addToWatchlist(movie.id);
+          setItems((prev) => [...prev, movie]);
+        }
+        setError(null);
+      } catch {
+        setError('Could not update your list. Please try again.');
+      } finally {
+        setPendingIds((previous) => {
+          const next = new Set(previous);
+          next.delete(movie.id);
+          return next;
+        });
       }
     },
-    [items]
+    [items, pendingIds]
   );
 
   const ids = useMemo(() => new Set(items.map((m) => m.id)), [items]);
 
   const value = useMemo(
-    () => ({ items, ids, loading, toggle, refresh }),
-    [items, ids, loading, toggle, refresh]
+    () => ({ items, ids, loading, error, pendingIds, toggle, refresh }),
+    [items, ids, loading, error, pendingIds, toggle, refresh]
   );
 
   return <WatchlistContext.Provider value={value}>{children}</WatchlistContext.Provider>;

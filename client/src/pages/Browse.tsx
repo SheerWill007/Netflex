@@ -18,6 +18,7 @@ const Browse = ({ type, title }: BrowseProps) => {
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     fetchMoviesByType(type)
       .then(setMovies)
       .catch(() => setError('Could not load titles.'))

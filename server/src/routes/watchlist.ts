@@ -39,7 +39,7 @@ router.post('/', (req: AuthRequest, res: Response) => {
     updateUser(user);
   }
 
-  res.status(201).json({ watchlist: user.watchlist });
+  res.status(200).json({ watchlist: user.watchlist });
 });
 
 router.delete('/:movieId', (req: AuthRequest, res: Response) => {

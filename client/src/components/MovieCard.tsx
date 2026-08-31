@@ -9,7 +9,7 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie }: MovieCardProps) => {
   const { openDetails, play } = useCatalog();
-  const { ids, toggle } = useWatchlist();
+  const { ids, pendingIds, toggle } = useWatchlist();
   const inList = ids.has(movie.id);
 
   const thumbStyle = {
@@ -41,6 +41,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           <button
             className="mini-btn"
             aria-label={inList ? 'Remove from list' : 'Add to list'}
+            disabled={pendingIds.has(movie.id)}
             onClick={(e) => {
               e.stopPropagation();
               void toggle(movie);

@@ -5,7 +5,7 @@ import { DetailsModal, PlayerModal } from '../components/Modals';
 import { useWatchlist } from '../context/WatchlistContext';
 
 const MyList = () => {
-  const { items, loading } = useWatchlist();
+  const { items, loading, error } = useWatchlist();
 
   return (
     <div className="app">
@@ -13,6 +13,7 @@ const MyList = () => {
       <main className="page">
         <h2 className="page__title">My List</h2>
         {loading && <p className="page__status">Loading your list…</p>}
+        {error && <p className="page__status">{error}</p>}
         {!loading && items.length === 0 && (
           <p className="page__status">Your list is empty. Add titles from Home.</p>
         )}

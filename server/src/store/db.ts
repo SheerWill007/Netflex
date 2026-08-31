@@ -21,17 +21,20 @@ function ensureDb(): DatabaseShape {
   const raw = fs.readFileSync(dbPath, 'utf-8');
   try {
     const parsed = JSON.parse(raw) as DatabaseShape;
-    if (!parsed.users) parsed.users = [];
+    if (!Array.isArray(parsed.users)) {
+      throw new Error('Database users field is invalid');
+    }
     return parsed;
   } catch {
-    const initial = emptyDb();
-    fs.writeFileSync(dbPath, JSON.stringify(initial, null, 2), 'utf-8');
-    return initial;
+    // Never overwrite a corrupt data file: doing so would silently erase accounts.
+    throw new Error(`Unable to read user database at ${dbPath}`);
   }
 }
 
 function persist(db: DatabaseShape): void {
-  fs.writeFileSync(dbPath, JSON.stringify(db, null, 2), 'utf-8');
+  const temporaryPath = `${dbPath}.tmp`;
+  fs.writeFileSync(temporaryPath, JSON.stringify(db, null, 2), 'utf-8');
+  fs.renameSync(temporaryPath, dbPath);
 }
 
 export function getUsers(): StoredUser[] {

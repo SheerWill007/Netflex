@@ -11,6 +11,10 @@ function toPublic(user: { id: string; email: string; name: string }): UserPublic
   return { id: user.id, email: user.email, name: user.name };
 }
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 router.post('/register', async (req: Request, res: Response) => {
   const { name, email, password } = req.body as {
     name?: string;
@@ -20,6 +24,14 @@ router.post('/register', async (req: Request, res: Response) => {
 
   if (!name?.trim() || !email?.trim() || !password) {
     return res.status(400).json({ error: 'Name, email, and password are required' });
+  }
+
+  if (!isValidEmail(email.trim())) {
+    return res.status(400).json({ error: 'Enter a valid email address' });
+  }
+
+  if (name.trim().length > 80 || email.trim().length > 254) {
+    return res.status(400).json({ error: 'Name or email is too long' });
   }
 
   if (password.length < 6) {
@@ -48,6 +60,10 @@ router.post('/login', async (req: Request, res: Response) => {
 
   if (!email?.trim() || !password) {
     return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  if (!isValidEmail(email.trim())) {
+    return res.status(401).json({ error: 'Invalid email or password' });
   }
 
   const user = findUserByEmail(email);

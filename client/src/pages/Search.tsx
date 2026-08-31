@@ -12,15 +12,19 @@ const Search = () => {
   const query = params.get('q') || '';
   const [results, setResults] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
+      setError(null);
       return;
     }
     setLoading(true);
+    setError(null);
     searchMovies(query)
       .then(setResults)
+      .catch(() => setError('Could not search titles. Please try again.'))
       .finally(() => setLoading(false));
   }, [query]);
 
@@ -30,7 +34,8 @@ const Search = () => {
       <main className="page">
         <h2 className="page__title">Results for “{query}”</h2>
         {loading && <p className="page__status">Searching…</p>}
-        {!loading && results.length === 0 && (
+        {error && <p className="page__status">{error}</p>}
+        {!loading && !error && results.length === 0 && (
           <p className="page__status">No titles matched that search.</p>
         )}
         <div className="grid">

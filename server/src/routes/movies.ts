@@ -29,7 +29,12 @@ router.get('/search', (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Query parameter "q" is required' });
   }
 
-  res.json(searchMovies(q));
+  const query = q.trim();
+  if (!query) {
+    return res.status(400).json({ error: 'Query parameter "q" cannot be empty' });
+  }
+
+  res.json(searchMovies(query));
 });
 
 router.get('/', (req: Request, res: Response) => {

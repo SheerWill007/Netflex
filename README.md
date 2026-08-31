@@ -1,341 +1,100 @@
-# Netflix Clone - Full Stack TypeScript Application
+# Netflix Clone
 
-A full-stack Netflix clone built with React, TypeScript, Express, and Node.js. This project demonstrates modern web development practices with a responsive UI and RESTful API architecture.
+A full-stack TypeScript streaming-catalog demo. It has a React/Vite client, an Express API, JWT-based accounts, and a per-user watchlist. The catalog is intentionally mock data and the player uses a public sample video.
 
-![Netflix Clone](https://img.shields.io/badge/TypeScript-100%25-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+## What it includes
 
-## 🚀 Features
+- Browseable movie and series catalog with category rows, search, details, and playback modal
+- Account registration, sign-in, protected routes, and token restoration
+- Per-account watchlist persisted by the API
+- Type-safe client and server code, CORS configuration, production static-file serving, and API health checks
 
-- **Modern Tech Stack**: React 18 + TypeScript + Vite for blazing-fast development
-- **Backend API**: Express + TypeScript REST API
-- **Responsive Design**: Mobile-first design that works on all devices
-- **Movie Browsing**: Browse movies by categories
-- **Dynamic Content**: Hero section with featured content
-- **Smooth Animations**: Card hover effects and transitions
-- **Type Safety**: Full TypeScript implementation across frontend and backend
+## Requirements
 
-## 📦 Project Structure
+- Node.js 18 or later
+- npm 9 or later
 
-```
-netflix/
-├── client/                 # React + TypeScript frontend
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── services/      # API integration
-│   │   ├── types/         # TypeScript types
-│   │   ├── App.tsx        # Main app component
-│   │   └── main.tsx       # Entry point
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.ts
-│
-├── server/                # Express + TypeScript backend
-│   ├── src/
-│   │   ├── data/         # Mock data
-│   │   ├── routes/       # API routes
-│   │   ├── types/        # TypeScript types
-│   │   └── index.ts      # Server entry point
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── package.json          # Root package.json for scripts
-└── README.md
+## Run locally
 
-```
+1. Install all dependencies:
 
-## 🛠️ Tech Stack
+   ```powershell
+   npm run install:all
+   ```
 
-### Frontend
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **Axios** - HTTP client
-- **CSS3** - Styling with custom properties
+2. Create local configuration from the included examples:
 
-### Backend
-- **Node.js** - Runtime environment
-- **Express** - Web framework
-- **TypeScript** - Type safety
-- **CORS** - Cross-origin resource sharing
-- **dotenv** - Environment configuration
+   ```powershell
+   Copy-Item server/.env.example server/.env
+   Copy-Item client/.env.example client/.env
+   ```
 
-## 📋 Prerequisites
+3. Set a unique `JWT_SECRET` in `server/.env`, then start both services:
 
-Before you begin, ensure you have the following installed:
-- **Node.js** (v18 or higher)
-- **npm** (v9 or higher)
+   ```powershell
+   npm run dev
+   ```
 
-## 🚀 Getting Started
+The client runs at `http://localhost:5173`; the API runs at `http://localhost:5000/api`.
 
-### 1. Clone the repository
+## Configuration
 
-```bash
-git clone <your-repo-url>
-cd netflix
-```
+`server/.env`:
 
-### 2. Install dependencies
-
-Install dependencies for both client and server:
-
-```bash
-npm run install:all
-```
-
-Or install individually:
-
-```bash
-# Install server dependencies
-cd server
-npm install
-
-# Install client dependencies
-cd ../client
-npm install
-```
-
-### 3. Set up environment variables
-
-#### Server Environment (.env)
-Create a `.env` file in the `server` directory:
-
-```bash
-cd server
-copy .env.example .env
-```
-
-Edit the `.env` file with your configuration:
 ```env
 PORT=5000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
+JWT_SECRET=replace-with-a-long-random-secret
 ```
 
-#### Client Environment (.env)
-Create a `.env` file in the `client` directory:
+`CLIENT_URL` may contain a comma-separated list of permitted browser origins. `JWT_SECRET` is mandatory when `NODE_ENV=production`.
 
-```bash
-cd client
-copy .env.example .env
-```
+`client/.env`:
 
-Edit the `.env` file:
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-### 4. Run the application
+## API
 
-#### Development Mode (Both services)
+| Method | Endpoint | Authentication | Purpose |
+| --- | --- | --- | --- |
+| GET | `/api/health` | No | Service status |
+| GET | `/api/movies/hero` | No | Featured title |
+| GET | `/api/movies/categories` | No | Catalog categories |
+| GET | `/api/movies?type=movie\|series` | No | Filtered catalog |
+| GET | `/api/movies/search?q=term` | No | Title search |
+| POST | `/api/auth/register` | No | Create account |
+| POST | `/api/auth/login` | No | Sign in |
+| GET | `/api/auth/me` | Bearer token | Current account |
+| GET | `/api/watchlist` | Bearer token | User’s list |
+| POST | `/api/watchlist` | Bearer token | Add `{ "movieId": "…" }` |
+| DELETE | `/api/watchlist/:movieId` | Bearer token | Remove a title |
 
-Run both client and server concurrently:
+## Production
 
-```bash
-npm run dev
-```
+Build both applications, then the server serves the compiled client and API:
 
-This will start:
-- **Backend API**: http://localhost:5000
-- **Frontend**: http://localhost:5173
-
-#### Run services individually
-
-**Backend only:**
-```bash
-npm run server:dev
-```
-
-**Frontend only:**
-```bash
-npm run client:dev
-```
-
-### 5. Build for production
-
-Build both client and server:
-
-```bash
+```powershell
 npm run build
-```
-
-Or build individually:
-
-```bash
-# Build server
-npm run server:build
-
-# Build client
-npm run client:build
-```
-
-### 6. Start production server
-
-```bash
 npm start
 ```
 
-## 📡 API Endpoints
+The local JSON store is suitable for development and demos only. Use a transactional database and a managed secret for a multi-user deployment.
 
-### Base URL
-```
-http://localhost:5000/api
-```
+## Quality checks
 
-### Available Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/movies/hero` | Get hero content |
-| GET | `/movies/categories` | Get all categories with movies |
-| GET | `/movies/categories/:id` | Get specific category by ID |
-| GET | `/movies` | Get all movies |
-| GET | `/movies/:id` | Get specific movie by ID |
-| GET | `/movies/search?q=query` | Search movies by title |
-| GET | `/health` | Health check endpoint |
-
-### Example Response
-
-**GET /api/movies/hero**
-```json
-{
-  "id": "hero-1",
-  "title": "Ember & Static",
-  "description": "When a small-town radio host starts picking up signals...",
-  "tag": "N-CLONE ORIGINAL",
-  "imageUrl": "https://source.unsplash.com/...",
-  "rating": 98,
-  "year": 2026,
-  "maturityRating": "16+",
-  "seasons": 3,
-  "isHD": true
-}
+```powershell
+npm run build
+npm run lint --prefix client
 ```
 
-## 🎨 Components
+## Project layout
 
-### Frontend Components
-
-- **Navbar**: Fixed navigation bar with scroll effect
-- **Hero**: Featured content section with play buttons
-- **Row**: Horizontal scrolling movie rows
-- **MovieCard**: Individual movie card with hover effects
-- **Footer**: Site footer with links
-
-### Component Props
-
-```typescript
-// Hero Component
-interface HeroProps {
-  content: HeroContent;
-}
-
-// Row Component
-interface RowProps {
-  category: Category;
-}
-
-// MovieCard Component
-interface MovieCardProps {
-  movie: Movie;
-}
+```text
+client/  React application, routes, UI components, and API client
+server/  Express routes, authentication, catalog data, and user store
 ```
 
-## 📝 Available Scripts
-
-### Root Level
-
-| Script | Description |
-|--------|-------------|
-| `npm run install:all` | Install all dependencies |
-| `npm run dev` | Run both client and server in dev mode |
-| `npm run build` | Build both client and server |
-| `npm start` | Start production server |
-| `npm run server:dev` | Run server in dev mode |
-| `npm run client:dev` | Run client in dev mode |
-
-### Server Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start server with nodemon |
-| `npm run build` | Build TypeScript to JavaScript |
-| `npm start` | Start production server |
-
-### Client Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
-
-## 🔧 Configuration Files
-
-- **`tsconfig.json`**: TypeScript configuration
-- **`vite.config.ts`**: Vite configuration
-- **`.env`**: Environment variables
-- **`package.json`**: Dependencies and scripts
-
-## 🎯 Future Enhancements
-
-- [ ] User authentication and authorization
-- [ ] Real database integration (PostgreSQL/MongoDB)
-- [ ] Video player functionality
-- [ ] User profiles and preferences
-- [ ] Watchlist and favorites
-- [ ] Search functionality with filters
-- [ ] Recommendation engine
-- [ ] Admin panel for content management
-- [ ] Unit and integration tests
-- [ ] Docker containerization
-- [ ] CI/CD pipeline
-
-## 🐛 Troubleshooting
-
-### Port already in use
-
-If port 5000 or 5173 is already in use:
-
-**Change server port:**
-Edit `server/.env`:
-```env
-PORT=5001
-```
-
-**Change client port:**
-Edit `client/vite.config.ts`:
-```typescript
-server: {
-  port: 5174,
-}
-```
-
-### CORS errors
-
-Ensure the `CLIENT_URL` in `server/.env` matches your frontend URL.
-
-### API connection failed
-
-1. Check if the backend is running on http://localhost:5000
-2. Verify `VITE_API_URL` in `client/.env`
-3. Check browser console for error messages
-
-## 📄 License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- Design inspired by Netflix
-- Built for educational purposes
-- Not affiliated with Netflix Inc.
-
-## 👤 Author
-
-Built with ❤️ as a learning project
-
----
-
-**Note**: This is a practice clone project built for learning purposes and is not affiliated with Netflix.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution conventions.

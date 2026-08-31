@@ -7,7 +7,7 @@ const SAMPLE_VIDEO =
 
 export const DetailsModal = () => {
   const { selected, closeDetails, play } = useCatalog();
-  const { ids, toggle } = useWatchlist();
+  const { ids, pendingIds, toggle } = useWatchlist();
 
   if (!selected) return null;
 
@@ -28,7 +28,11 @@ export const DetailsModal = () => {
             <button className="btn btn--play" onClick={() => play(selected)}>
               Play
             </button>
-            <button className="btn btn--info" onClick={() => void toggle(selected)}>
+            <button
+              className="btn btn--info"
+              onClick={() => void toggle(selected)}
+              disabled={pendingIds.has(selected.id)}
+            >
               {inList ? 'Remove from My List' : 'Add to My List'}
             </button>
           </div>

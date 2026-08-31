@@ -4,14 +4,22 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+const isProduction = process.env.NODE_ENV === 'production';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (isProduction && !JWT_SECRET) {
+  throw new Error('JWT_SECRET must be configured in production');
+}
+
+// The fallback keeps local setup simple. Production always requires an explicit secret.
+const signingSecret = JWT_SECRET || 'development-only-secret';
 
 export interface AuthRequest extends Request {
   userId?: string;
 }
 
 export function signToken(userId: string): string {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign({ userId }, signingSecret, { expiresIn: '7d' });
 }
 
 export function requireAuth(req: AuthRequest, res: Response, next: NextFunction): void {
@@ -24,7 +32,7 @@ export function requireAuth(req: AuthRequest, res: Response, next: NextFunction)
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { userId: string };
+    const payload = jwt.verify(token, signingSecret) as { userId: string };
     req.userId = payload.userId;
     next();
   } catch {
