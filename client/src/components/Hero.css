@@ -1,0 +1,133 @@
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  height: 88vh;
+  min-height: 480px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  padding: 0 4%;
+}
+
+.hero__content {
+  max-width: 620px;
+  padding-top: 40px;
+}
+
+.hero__tag {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 88px);
+  line-height: 0.95;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hero__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.hero__meta .match {
+  color: #46d369;
+  font-weight: 700;
+}
+
+.hero__meta .badge {
+  border: 1px solid var(--text-mute);
+  padding: 1px 6px;
+  font-size: 12px;
+}
+
+.hero__meta .hd {
+  border: 1px solid var(--text-mute);
+  padding: 1px 6px;
+  font-size: 12px;
+}
+
+.hero__desc {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 24px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  max-width: 560px;
+}
+
+.hero__buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.btn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.btn--play {
+  background: var(--text);
+  color: #000;
+}
+
+.btn--play:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.btn--info {
+  background: rgba(109, 109, 110, 0.6);
+  color: var(--text);
+}
+
+.btn--info:hover {
+  background: rgba(109, 109, 110, 0.4);
+}
+
+.hero__age-badge {
+  position: absolute;
+  right: 4%;
+  bottom: 14%;
+  border-left: 4px solid var(--text-mute);
+  padding: 6px 10px;
+  font-size: 15px;
+  background: rgba(36, 36, 36, 0.6);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 560px) {
+  .hero {
+    height: 75vh;
+  }
+
+  .hero__buttons .btn {
+    padding: 9px 16px;
+    font-size: 14px;
+  }
+
+  .hero__desc {
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,27 @@
+/* ===== Rows ===== */
+.row {
+  margin-bottom: 2.6vw;
+  padding-left: 4%;
+}
+
+.row__title {
+  font-size: 1.3vw;
+  min-font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 0.6vw;
+  font-size: clamp(16px, 1.3vw, 22px);
+}
+
+.row__track {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 20px 4% 20px 0;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.row__track::-webkit-scrollbar {
+  display: none;
+}

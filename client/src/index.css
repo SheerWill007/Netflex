@@ -1,0 +1,46 @@
+/* ===== Tokens ===== */
+:root {
+  --bg: #141414;
+  --bg-raised: #181818;
+  --red: #e50914;
+  --red-hover: #f6121d;
+  --text: #ffffff;
+  --text-dim: #b3b3b3;
+  --text-mute: #808080;
+  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
+  --font-body: "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --nav-h: 68px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
