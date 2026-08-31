@@ -39,7 +39,7 @@ const catalog = {
     "Nobody Saves the World", "The Diplomat", "All of Us Are Dead"
   ],
   "Documentaries & Reality": [
-    "Our Planet", "The Last Dance", "Fyre: The Greatest Party That Never Happened", 
+    "Our Planet", "The Last Dance", "Fyre: The Greatest Party That Never Happened",
     "Tiger King", "The Social Dilemma", "The Great British Baking Show", "Cheer",
     "Love is Blind", "The Circle", "Terrace House", "High Score", "Jiro Dreams of Sushi"
   ],
