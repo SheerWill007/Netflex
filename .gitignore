@@ -25,6 +25,9 @@ build/
 .DS_Store
 Thumbs.db
 
+# App data
+server/data/db.json
+
 # Logs
 logs/
 *.log

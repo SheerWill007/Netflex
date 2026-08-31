@@ -1,4 +1,6 @@
 import type { Movie } from '../types';
+import { useCatalog } from '../context/CatalogContext';
+import { useWatchlist } from '../context/WatchlistContext';
 import './MovieCard.css';
 
 interface MovieCardProps {
@@ -6,6 +8,10 @@ interface MovieCardProps {
 }
 
 const MovieCard = ({ movie }: MovieCardProps) => {
+  const { openDetails, play } = useCatalog();
+  const { ids, toggle } = useWatchlist();
+  const inList = ids.has(movie.id);
+
   const thumbStyle = {
     backgroundImage: `url('${movie.imageUrl}')`,
     backgroundSize: 'cover',
@@ -13,39 +19,54 @@ const MovieCard = ({ movie }: MovieCardProps) => {
   };
 
   return (
-    <div className="card">
+    <div className="card" onClick={() => openDetails(movie)}>
       <div className="card__thumb" style={thumbStyle}>
         <span className="card__label">{movie.title}</span>
       </div>
       <div className="card__overlay">
         <p className="card__overlay-title">{movie.title}</p>
         <div className="card__overlay-actions">
-          <button className="mini-btn mini-btn--play" aria-label="Play">
+          <button
+            className="mini-btn mini-btn--play"
+            aria-label="Play"
+            onClick={(e) => {
+              e.stopPropagation();
+              play(movie);
+            }}
+          >
             <svg viewBox="0 0 24 24">
               <path d="M6 4l14 8-14 8V4z" fill="currentColor" />
             </svg>
           </button>
-          <button className="mini-btn" aria-label="Add to list">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 5v14M5 12h14"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-          <button className="mini-btn" aria-label="Like">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M7 10v10M3 12v6a2 2 0 002 2h10.5a2 2 0 002-1.6l1.3-6A2 2 0 0016.8 10H13l1-4.5A1.5 1.5 0 0012.6 4L7 10z"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                fill="none"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <button
+            className="mini-btn"
+            aria-label={inList ? 'Remove from list' : 'Add to list'}
+            onClick={(e) => {
+              e.stopPropagation();
+              void toggle(movie);
+            }}
+          >
+            {inList ? (
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M5 12l5 5L20 7"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 5v14M5 12h14"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
           </button>
         </div>
         <p className="card__overlay-meta">

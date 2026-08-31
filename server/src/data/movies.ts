@@ -11,13 +11,14 @@ const createMovie = (
 ): Movie => ({
   id,
   title,
-  imageUrl: `https://source.unsplash.com/400x225/?${encodeURIComponent(title)}`,
+  imageUrl: `https://picsum.photos/seed/${encodeURIComponent(id)}/800/450`,
   category,
   rating,
   year,
   maturityRating,
   seasons,
   isHD: true,
+  type: seasons ? 'series' : 'movie',
   description: `${title} is a captivating ${category.toLowerCase()} that has earned a ${rating}% match rating.`
 });
 
@@ -26,7 +27,7 @@ export const heroContent: HeroContent = {
   title: 'Ember & Static',
   description: 'When a small-town radio host starts picking up signals from a future no one has lived yet, she has to decide how much of tomorrow anyone deserves to know.',
   tag: 'N-CLONE ORIGINAL',
-  imageUrl: 'https://source.unsplash.com/1920x1080/?radio,future,mystery',
+  imageUrl: 'https://picsum.photos/seed/ember-static/1920/1080',
   rating: 98,
   year: 2026,
   maturityRating: '16+',

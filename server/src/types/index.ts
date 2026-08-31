@@ -1,3 +1,5 @@
+export type MediaType = 'movie' | 'series';
+
 export interface Movie {
   id: string;
   title: string;
@@ -10,6 +12,22 @@ export interface Movie {
   seasons?: number;
   duration?: string;
   isHD: boolean;
+  type: MediaType;
+}
+
+export interface UserPublic {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface StoredUser extends UserPublic {
+  passwordHash: string;
+  watchlist: string[];
+}
+
+export interface DatabaseShape {
+  users: StoredUser[];
 }
 
 export interface Category {

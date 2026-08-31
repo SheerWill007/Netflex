@@ -1,68 +1,77 @@
-import { useEffect, useState } from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Row from './components/Row';
-import Footer from './components/Footer';
-import { fetchHeroContent, fetchCategories } from './services/api';
-import type { HeroContent, Category } from './types';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { WatchlistProvider } from './context/WatchlistContext';
+import { CatalogProvider } from './context/CatalogContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import MyList from './pages/MyList';
+import Search from './pages/Search';
+import Browse from './pages/Browse';
 import './App.css';
 
-function App() {
-  const [hero, setHero] = useState<HeroContent | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const [heroData, categoriesData] = await Promise.all([
-          fetchHeroContent(),
-          fetchCategories(),
-        ]);
-        setHero(heroData);
-        setCategories(categoriesData);
-        setError(null);
-      } catch (err) {
-        console.error('Error loading data:', err);
-        setError('Failed to load content. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="loading">
-        <div className="loading-spinner"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="error">
-        <h2>Oops! Something went wrong</h2>
-        <p>{error}</p>
-      </div>
-    );
-  }
-
+function AppShell() {
   return (
-    <div className="app">
-      <Navbar />
-      {hero && <Hero content={hero} />}
-      <main className="rows">
-        {categories.map((category) => (
-          <Row key={category.id} category={category} />
-        ))}
-      </main>
-      <Footer />
-    </div>
+    <WatchlistProvider>
+      <CatalogProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tv-shows"
+            element={
+              <ProtectedRoute>
+                <Browse type="series" title="TV Shows" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/movies"
+            element={
+              <ProtectedRoute>
+                <Browse type="movie" title="Movies" />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-list"
+            element={
+              <ProtectedRoute>
+                <MyList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <Search />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </CatalogProvider>
+    </WatchlistProvider>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

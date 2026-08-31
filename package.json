@@ -4,7 +4,7 @@
   "description": "Full-stack Netflix clone with React + TypeScript frontend and Express + TypeScript backend",
   "main": "index.js",
   "scripts": {
-    "install:all": "npm install --prefix server && npm install --prefix client",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
     "server:dev": "npm run dev --prefix server",
     "client:dev": "npm run dev --prefix client",
