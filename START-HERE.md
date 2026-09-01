@@ -104,9 +104,9 @@ netflix/
 
 ---
 
-## 🎨 First Thing To Do
+## 🎨 First Things To Do
 
-### Add Your Netflix Logo
+### 1. Add Your Netflix Logo
 
 1. **Create or download** a Netflix-style logo (64x64px PNG)
 2. **Name it**: `netflix.png`
@@ -114,6 +114,14 @@ netflix/
 4. **Refresh** browser
 
 **Guide**: `/public/HOW-TO-ADD-LOGO.md`
+
+### 2. Set Up Clerk Authentication
+
+1. **Get your Clerk keys** from https://dashboard.clerk.com/
+2. **Update** `client/.env.local` with your keys
+3. **Test sign-up** at http://localhost:3000
+
+**Complete Guide**: `CLERK-SETUP.md`
 
 ---
 
@@ -166,6 +174,12 @@ npm run lint             # Check code quality
 - **Modern** - Latest React patterns
 - **SEO Ready** - Built-in optimization
 
+### Authentication
+- **Clerk Auth** - Secure authentication built-in
+- **Sign In/Sign Up** - Modal-based auth flow
+- **User Management** - Profile management included
+- **Protected Routes** - Middleware-based protection
+
 ### What Works
 - ✅ Movie browsing
 - ✅ Hero banner
@@ -173,6 +187,7 @@ npm run lint             # Check code quality
 - ✅ Hover effects
 - ✅ Responsive design
 - ✅ API integration
+- ✅ User authentication
 
 ---
 

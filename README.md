@@ -28,6 +28,7 @@ http://localhost:3000
 ## ✨ Features
 
 - **Next.js 14** - Server-Side Rendering + App Router
+- **Clerk Authentication** - Secure user sign-in/sign-up with modals
 - **SEO Optimized** - Better search engine visibility
 - **TypeScript** - Full type safety
 - **90+ Movies** - Across 9 categories
@@ -94,7 +95,13 @@ npm run install:all
 Client (`.env.local`):
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
 ```
+
+Get your Clerk keys from https://dashboard.clerk.com/
 
 Server (`.env`):
 ```env

@@ -120,3 +120,33 @@
     display: none;
   }
 }
+
+
+/* ===== Auth Buttons ===== */
+.auth-btn {
+  background: none;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--text-mute);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.auth-btn:hover {
+  border-color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.auth-btn--primary {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--text);
+}
+
+.auth-btn--primary:hover {
+  background: var(--red-hover);
+  border-color: var(--red-hover);
+}

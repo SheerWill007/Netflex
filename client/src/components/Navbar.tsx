@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { SignInButton, SignUpButton, UserButton, SignedIn, SignedOut } from '@clerk/nextjs';
 import '@/styles/Navbar.css';
 
 const Navbar = () => {
@@ -58,19 +59,26 @@ const Navbar = () => {
             />
           </svg>
         </button>
-        <div className="profile">
-          <div className="profile__avatar"></div>
-          <svg className="profile__caret" viewBox="0 0 24 24">
-            <path
-              d="M6 9l6 6 6-6"
-              stroke="currentColor"
-              strokeWidth="2"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
+        
+        {/* Clerk Authentication */}
+        <SignedOut>
+          <SignInButton mode="modal">
+            <button className="auth-btn">Sign In</button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <button className="auth-btn auth-btn--primary">Sign Up</button>
+          </SignUpButton>
+        </SignedOut>
+        
+        <SignedIn>
+          <UserButton 
+            appearance={{
+              elements: {
+                avatarBox: "w-8 h-8"
+              }
+            }}
+          />
+        </SignedIn>
       </div>
     </header>
   );

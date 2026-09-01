@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Bebas_Neue, Roboto } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
 import '@/styles/globals.css';
 
 const bebasNeue = Bebas_Neue({
@@ -33,8 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${bebasNeue.variable} ${roboto.variable}`}>
-      <body>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={`${bebasNeue.variable} ${roboto.variable}`}>
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
   );
 }
