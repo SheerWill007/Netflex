@@ -1,6 +1,11 @@
-# Netflix Clone
+# Netflex Clone
 
 A full-stack TypeScript streaming-catalog demo. It has a React/Vite client, an Express API, JWT-based accounts, and a per-user watchlist. The catalog is intentionally mock data and the player uses a public sample video.
+
+## Author
+
+**William Law**
+Portfolio: [https://willx.tech](https://willx.tech/)
 
 ## What it includes
 
@@ -8,6 +13,12 @@ A full-stack TypeScript streaming-catalog demo. It has a React/Vite client, an E
 - Account registration, sign-in, protected routes, and token restoration
 - Per-account watchlist persisted by the API
 - Type-safe client and server code, CORS configuration, production static-file serving, and API health checks
+
+## Tech stack
+
+**Client:** React, Vite, TypeScript, Axios
+**Server:** Node.js, Express, TypeScript, JWT authentication
+**Data:** Local JSON store (development/demo use)
 
 ## Requirements
 
@@ -18,22 +29,22 @@ A full-stack TypeScript streaming-catalog demo. It has a React/Vite client, an E
 
 1. Install all dependencies:
 
-   ```powershell
+```powershell
    npm run install:all
-   ```
+```
 
 2. Create local configuration from the included examples:
 
-   ```powershell
+```powershell
    Copy-Item server/.env.example server/.env
    Copy-Item client/.env.example client/.env
-   ```
+```
 
 3. Set a unique `JWT_SECRET` in `server/.env`, then start both services:
 
-   ```powershell
+```powershell
    npm run dev
-   ```
+```
 
 The client runs at `http://localhost:5173`; the API runs at `http://localhost:5000/api`.
 
@@ -68,7 +79,7 @@ VITE_API_URL=http://localhost:5000/api
 | POST | `/api/auth/register` | No | Create account |
 | POST | `/api/auth/login` | No | Sign in |
 | GET | `/api/auth/me` | Bearer token | Current account |
-| GET | `/api/watchlist` | Bearer token | User’s list |
+| GET | `/api/watchlist` | Bearer token | User's list |
 | POST | `/api/watchlist` | Bearer token | Add `{ "movieId": "…" }` |
 | DELETE | `/api/watchlist/:movieId` | Bearer token | Remove a title |
 
@@ -97,4 +108,14 @@ client/  React application, routes, UI components, and API client
 server/  Express routes, authentication, catalog data, and user store
 ```
 
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
+
+## Contributing
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution conventions.
+
+## Contact
+
+For questions or feedback, visit [willx.tech](https://willx.tech).
