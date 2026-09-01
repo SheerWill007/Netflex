@@ -7,8 +7,8 @@
   --text: #ffffff;
   --text-dim: #b3b3b3;
   --text-mute: #808080;
-  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
-  --font-body: "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
   --nav-h: 68px;
 }
 
@@ -25,7 +25,7 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-body);
+  font-family: var(--font-body), "Roboto", "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
 }
 

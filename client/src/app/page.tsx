@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
-import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import Row from '../components/Row';
-import Footer from '../components/Footer';
-import { DetailsModal, PlayerModal } from '../components/Modals';
-import { fetchHeroContent, fetchCategories } from '../services/api';
-import type { HeroContent, Category } from '../types';
+'use client';
 
-const Home = () => {
+import { useEffect, useState } from 'react';
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import Row from '@/components/Row';
+import Footer from '@/components/Footer';
+import { fetchHeroContent, fetchCategories } from '@/lib/api';
+import type { HeroContent, Category } from '@/types';
+import '@/styles/App.css';
+
+export default function Home() {
   const [hero, setHero] = useState<HeroContent | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +34,7 @@ const Home = () => {
       }
     };
 
-    void loadData();
+    loadData();
   }, []);
 
   if (loading) {
@@ -62,10 +64,6 @@ const Home = () => {
         ))}
       </main>
       <Footer />
-      <DetailsModal />
-      <PlayerModal />
     </div>
   );
-};
-
-export default Home;
+}

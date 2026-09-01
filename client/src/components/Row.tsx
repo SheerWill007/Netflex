@@ -1,6 +1,8 @@
-import type { Category } from '../types';
+'use client';
+
+import type { Category } from '@/types';
 import MovieCard from './MovieCard';
-import './Row.css';
+import '@/styles/Row.css';
 
 interface RowProps {
   category: Category;

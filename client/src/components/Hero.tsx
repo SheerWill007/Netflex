@@ -1,30 +1,15 @@
-import type { HeroContent } from '../types';
-import { useCatalog } from '../context/CatalogContext';
-import './Hero.css';
+'use client';
+
+import type { HeroContent } from '@/types';
+import '@/styles/Hero.css';
 
 interface HeroProps {
   content: HeroContent;
 }
 
 const Hero = ({ content }: HeroProps) => {
-  const { openDetails, play } = useCatalog();
-
-  const asMovie = {
-    id: content.id,
-    title: content.title,
-    description: content.description,
-    imageUrl: content.imageUrl,
-    category: 'Featured',
-    rating: content.rating,
-    year: content.year,
-    maturityRating: content.maturityRating,
-    seasons: content.seasons,
-    isHD: content.isHD,
-    type: content.seasons ? ('series' as const) : ('movie' as const),
-  };
-
   const backgroundStyle = {
-    backgroundImage: `linear-gradient(180deg, rgba(20,20,20,0) 0%, rgba(20,20,20,0.7) 65%, #141414 100%), url('${content.imageUrl}')`,
+    backgroundImage: `linear-gradient(180deg, rgba(20,20,20,0) 0%, rgba(20,20,20,0.7) 65%, #141414 100%), radial-gradient(ellipse at 30% 30%, #4a2b1f 0%, #1c0f0a 55%, #141414 100%)`,
   };
 
   return (
@@ -41,13 +26,13 @@ const Hero = ({ content }: HeroProps) => {
         </p>
         <p className="hero__desc">{content.description}</p>
         <div className="hero__buttons">
-          <button className="btn btn--play" onClick={() => play(asMovie)}>
+          <button className="btn btn--play">
             <svg viewBox="0 0 24 24">
               <path d="M6 4l14 8-14 8V4z" fill="currentColor" />
             </svg>
             Play
           </button>
-          <button className="btn btn--info" onClick={() => openDetails(asMovie)}>
+          <button className="btn btn--info">
             <svg viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
               <path

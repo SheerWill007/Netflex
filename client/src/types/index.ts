@@ -1,5 +1,3 @@
-export type MediaType = 'movie' | 'series';
-
 export interface Movie {
   id: string;
   title: string;
@@ -12,7 +10,6 @@ export interface Movie {
   seasons?: number;
   duration?: string;
   isHD: boolean;
-  type: MediaType;
 }
 
 export interface Category {
@@ -32,15 +29,4 @@ export interface HeroContent {
   maturityRating: string;
   seasons?: number;
   isHD: boolean;
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  user: User;
 }

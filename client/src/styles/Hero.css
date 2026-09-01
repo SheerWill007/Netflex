@@ -24,7 +24,7 @@
 }
 
 .hero__title {
-  font-family: var(--font-display);
+  font-family: var(--font-display), "Bebas Neue", "Arial Narrow", sans-serif;
   font-size: clamp(48px, 8vw, 88px);
   line-height: 0.95;
   letter-spacing: 1px;

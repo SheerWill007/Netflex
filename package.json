@@ -1,10 +1,10 @@
 {
   "name": "netflix-clone-fullstack",
-  "version": "1.0.0",
-  "description": "Full-stack Netflix clone with React + TypeScript frontend and Express + TypeScript backend",
+  "version": "2.0.0",
+  "description": "Full-stack Netflix clone with Next.js + TypeScript frontend and Express + TypeScript backend",
   "main": "index.js",
   "scripts": {
-    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "install:all": "npm install --prefix server && npm install --prefix client",
     "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
     "server:dev": "npm run dev --prefix server",
     "client:dev": "npm run dev --prefix client",
@@ -13,11 +13,12 @@
     "client:build": "npm run build --prefix client",
     "start": "npm start --prefix server",
     "server:start": "npm start --prefix server",
-    "client:preview": "npm run preview --prefix client"
+    "client:start": "npm run start --prefix client"
   },
   "keywords": [
     "netflix",
     "clone",
+    "next.js",
     "react",
     "typescript",
     "express",

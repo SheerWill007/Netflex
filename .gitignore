@@ -7,12 +7,14 @@ yarn-error.log*
 # Build outputs
 dist/
 build/
+.next/
+out/
 *.tsbuildinfo
 
 # Environment variables
 .env
 .env.local
-.env.*.local
+.env*.local
 
 # IDE
 .vscode/
@@ -25,9 +27,11 @@ build/
 .DS_Store
 Thumbs.db
 
-# App data
-server/data/db.json
-
 # Logs
 logs/
 *.log
+
+# Next.js
+.next/
+out/
+next-env.d.ts

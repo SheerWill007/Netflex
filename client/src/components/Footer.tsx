@@ -1,4 +1,6 @@
-import './Footer.css';
+'use client';
+
+import '@/styles/Footer.css';
 
 const Footer = () => {
   return (
