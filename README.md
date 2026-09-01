@@ -110,7 +110,7 @@ server/  Express routes, authentication, catalog data, and user store
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+GNU AFFERO GENERAL PUBLIC LICENSE. See [LICENSE](LICENSE) for details.
 
 ## Contributing
 
