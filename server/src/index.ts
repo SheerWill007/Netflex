@@ -1,6 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 import moviesRouter from './routes/movies';
 import authRouter from './routes/auth';
@@ -33,14 +34,25 @@ app.get('/api/health', (_req: Request, res: Response) => {
 });
 
 if (process.env.NODE_ENV === 'production') {
-  const clientDist = path.join(__dirname, '../../client/dist');
-  app.use(express.static(clientDist));
-  app.get('*', (req: Request, res: Response, next: NextFunction) => {
-    if (req.path.startsWith('/api')) {
-      return next();
-    }
-    res.sendFile(path.join(clientDist, 'index.html'));
-  });
+  const clientDist = path.resolve(__dirname, '../../client/dist');
+  const clientIndex = path.join(clientDist, 'index.html');
+  const hasClientBuild = fs.existsSync(clientIndex);
+
+  if (!hasClientBuild) {
+    console.warn(
+      `Production mode is enabled, but the frontend build was not found at ${clientIndex}. ` +
+      'The API will continue running without serving the React app. Ensure the client build is generated before deployment.'
+    );
+  } else {
+    app.use(express.static(clientDist));
+    app.get('*', (req: Request, res: Response, next: NextFunction) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+
+      res.sendFile(clientIndex);
+    });
+  }
 }
 
 app.use((_req: Request, res: Response) => {
