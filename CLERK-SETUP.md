@@ -2,7 +2,7 @@
 
 ## 🔐 Overview
 
-Your Netflix Clone now has Clerk authentication integrated! Follow these steps to complete the setup.
+Your Netflex now has Clerk authentication integrated! Follow these steps to complete the setup.
 
 ## 📋 What's Been Added
 
@@ -70,7 +70,7 @@ In your Clerk Dashboard:
    - Phone number (optional)
 
 3. **Customize Appearance** (optional):
-   - Match Netflix theme colors
+   - Match theme colors
    - Upload logo
    - Customize button styles
 
@@ -105,7 +105,7 @@ The Navbar now includes:
 
 **When Signed Out:**
 - "Sign In" button (opens Clerk modal)
-- "Sign Up" button (opens Clerk modal, red Netflix style)
+- "Sign Up" button (opens Clerk modal, red theme style)
 
 **When Signed In:**
 - User profile button (Clerk UserButton)
@@ -246,7 +246,7 @@ In Clerk Dashboard → Settings → Allowed Origins, add:
 ### Recommended
 1. **Add User Profile Page**: Create `/profile` route
 2. **Protect Routes**: Add more protected routes
-3. **Customize Appearance**: Match Netflix branding
+3. **Customize Appearance**: Match app branding
 4. **Add Organizations**: For multi-user features
 5. **Set Up Webhooks**: Sync users with your database
 

@@ -1,8 +1,8 @@
-# 🎬 START HERE - Netflix Clone with Next.js
+# 🎬 START HERE - Netflex with Next.js
 
 ## Welcome! 👋
 
-You have a **full-stack Netflix clone** built with:
+You have a **full-stack streaming platform** built with:
 - **Next.js 14** (Frontend with SSR)
 - **Express + TypeScript** (Backend API)
 - **90+ Movies** in 9 categories
@@ -32,7 +32,7 @@ http://localhost:3000
 
 ## 🎯 What This Project Is
 
-A **production-ready Netflix clone** featuring:
+A **production-ready streaming platform** featuring:
 
 ✅ Modern Next.js 14 with App Router
 ✅ Server-Side Rendering (SSR)
@@ -50,9 +50,9 @@ A **production-ready Netflix clone** featuring:
 ## 📁 Project Structure
 
 ```
-netflix/
+netflex/
 ├── public/          # Static assets (ADD YOUR LOGO HERE!)
-│   └── netflix.png  # ← Your favicon goes here
+│   └── netflex.png  # ← Your favicon goes here
 │
 ├── client/          # Next.js 14 Frontend
 │   ├── src/
@@ -106,10 +106,10 @@ netflix/
 
 ## 🎨 First Things To Do
 
-### 1. Add Your Netflix Logo
+### 1. Add Your Netflex Logo
 
-1. **Create or download** a Netflix-style logo (64x64px PNG)
-2. **Name it**: `netflix.png`
+1. **Create or download** a logo (64x64px PNG)
+2. **Name it**: `netflex.png`
 3. **Place in**: `/public/` folder
 4. **Refresh** browser
 
@@ -255,7 +255,7 @@ npm run dev
 1. ✅ Run `npm run install:all`
 2. ✅ Run `npm run dev`
 3. ✅ Open http://localhost:3000
-4. ✅ Add your logo to `/public/netflix.png`
+4. ✅ Add your logo to `/public/netflex.png`
 
 ### Today
 1. Read `QUICK-START-NEXTJS.md`
@@ -275,7 +275,7 @@ npm run dev
 ### Level 1: Setup
 - Read: `START-HERE.md` (this file)
 - Do: Install and run the app
-- Result: Working Netflix clone
+- Result: Working Netflex app
 
 ### Level 2: Understand
 - Read: `QUICK-START-NEXTJS.md`
@@ -371,7 +371,7 @@ Before you start coding:
 
 ## 🎉 You're Ready!
 
-Your Next.js-powered Netflix Clone is ready to go!
+Your Next.js-powered Netflex is ready to go!
 
 **Run it:**
 ```powershell
@@ -387,6 +387,6 @@ http://localhost:3000
 
 ---
 
-*Netflix Clone - Built with Next.js 14, React 18, TypeScript & Express*
+*Netflex - Built with Next.js 14, React 18, TypeScript & Express*
 
 **Happy Coding!** 🎬

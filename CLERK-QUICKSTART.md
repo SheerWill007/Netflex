@@ -54,4 +54,4 @@ See `CLERK-SETUP.md` for:
 
 ---
 
-**That's it!** Your Netflix Clone now has authentication! 🎉
+**That's it!** Your Netflex now has authentication! 🎉

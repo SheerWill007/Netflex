@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo   Netflix Clone - Frontend Only
+echo   Netflex - Frontend Only
 echo ========================================
 echo.
 echo Starting Next.js on http://localhost:3000

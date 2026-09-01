@@ -18,11 +18,11 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: 'Netflix Clone - Watch Movies & TV Shows',
-  description: 'A full-stack Netflix clone built with Next.js, TypeScript, and Express',
+  title: 'Netflex - Watch Movies & TV Shows',
+  description: 'A full-stack streaming platform built with Next.js, TypeScript, and Express',
   icons: {
-    icon: '/netflix.png',
-    apple: '/netflix.png',
+    icon: '/netflex.png',
+    apple: '/netflex.png',
   },
   manifest: '/manifest.json',
   themeColor: '#141414',

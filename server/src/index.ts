@@ -6,7 +6,7 @@ import path from 'path';
 import moviesRouter from './routes/movies';
 import authRouter from './routes/auth';
 import watchlistRouter from './routes/watchlist';
-import { CORS_OPTIONS, SERVER_CONFIG, API_PREFIX } from './config/constants';
+import { SERVER_CONFIG, API_PREFIX } from './config/constants';
 import { errorHandler } from './utils/errorHandler';
 import { logger } from './utils/logger';
 
@@ -51,7 +51,7 @@ app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
 // Root endpoint
 app.get('/', (_req: Request, res: Response) => {
   res.json({
-    message: 'Netflix Clone API',
+    message: 'Netflex API',
     version: '1.0.0',
     endpoints: {
       health: `${API_PREFIX}/health`,

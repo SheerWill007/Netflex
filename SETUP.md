@@ -1,6 +1,6 @@
-# Setup Guide - Netflix Clone
+# Setup Guide - Netflex
 
-Complete setup guide for the Netflix Clone project.
+Complete setup guide for the Netflex project.
 
 ## 📋 Prerequisites
 
@@ -25,7 +25,7 @@ npm --version
 
 ```powershell
 git clone <repository-url>
-cd netflix
+cd netflex
 ```
 
 ### Step 2: Install Dependencies
@@ -95,9 +95,9 @@ npm run install:all
 
 ### Step 4: Add Your Logo
 
-1. Create or download a Netflix logo (64x64px PNG recommended)
-2. Name it: `netflix.png`
-3. Place in: `/public/netflix.png`
+1. Create or download a logo (64x64px PNG recommended)
+2. Name it: `netflex.png`
+3. Place in: `/public/netflex.png`
 
 See `/public/HOW-TO-ADD-LOGO.md` for details.
 
@@ -145,7 +145,7 @@ Expected response:
 ### Check Frontend
 1. Open: http://localhost:3000
 2. You should see:
-   - Netflix clone homepage
+   - Netflex homepage
    - Hero banner with "Ember & Static"
    - 9 movie categories
    - Interactive movie cards
@@ -331,7 +331,7 @@ After setup:
 - [ ] Dependencies installed
 - [ ] `server/.env` configured
 - [ ] `client/.env.local` configured
-- [ ] Logo added to `/public/netflix.png`
+- [ ] Logo added to `/public/netflex.png`
 - [ ] Backend starts without errors
 - [ ] Frontend starts without errors
 - [ ] http://localhost:5000/api/health returns OK

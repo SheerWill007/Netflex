@@ -19,7 +19,7 @@ const Navbar = () => {
   return (
     <header className={`navbar ${isScrolled ? 'navbar--solid' : ''}`}>
       <div className="navbar__left">
-        <h1 className="logo">NETFLIX-CLONE</h1>
+        <h1 className="logo">NETFLEX</h1>
         <nav className="nav-links">
           <a href="#" className="active">Home</a>
           <a href="#">TV Shows</a>

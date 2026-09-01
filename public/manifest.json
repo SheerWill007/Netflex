@@ -1,14 +1,14 @@
 {
-  "name": "Netflix Clone",
-  "short_name": "Netflix",
-  "description": "A full-stack Netflix clone built with React and TypeScript",
+  "name": "Netflex",
+  "short_name": "Netflex",
+  "description": "A full-stack streaming platform built with Next.js and TypeScript",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#141414",
   "background_color": "#141414",
   "icons": [
     {
-      "src": "/netflix.png",
+      "src": "/netflex.png",
       "sizes": "64x64",
       "type": "image/png",
       "purpose": "any maskable"

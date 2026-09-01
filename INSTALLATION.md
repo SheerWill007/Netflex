@@ -47,10 +47,10 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
 NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 ```
 
-### Step 4: Add Netflix Logo
+### Step 4: Add Netflex Logo
 
-1. Create or download Netflix logo (64x64px PNG)
-2. Save as `netflix.png`
+1. Create or download logo (64x64px PNG)
+2. Save as `netflex.png`
 3. Place in `/public/` folder
 
 ### Step 5: Start Development
@@ -67,7 +67,7 @@ Or double-click: `start-dev.bat`
    - Should return: `{"status":"OK",...}`
 
 2. **Frontend**: http://localhost:3000
-   - Should see Netflix clone
+   - Should see Netflex app
    - Should see "Sign In" and "Sign Up" buttons
 
 3. **Test Auth**: Click "Sign Up"
@@ -80,7 +80,7 @@ Or double-click: `start-dev.bat`
 - [ ] Dependencies installed (no errors)
 - [ ] `server/.env` configured
 - [ ] `client/.env.local` configured with **Clerk keys**
-- [ ] Logo added to `/public/netflix.png`
+- [ ] Logo added to `/public/netflex.png`
 - [ ] Backend runs: http://localhost:5000
 - [ ] Frontend runs: http://localhost:3000
 - [ ] Sign Up button visible

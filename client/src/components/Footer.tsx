@@ -32,7 +32,7 @@ const Footer = () => {
         </div>
       </div>
       <p className="footer__note">
-        This is a practice clone project built for learning purposes — not affiliated with Netflix.
+        This is a practice project built for learning purposes.
       </p>
     </footer>
   );

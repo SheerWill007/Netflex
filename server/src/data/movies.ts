@@ -53,22 +53,22 @@ const moviesData: Movie[] = [
   createMovie('m14', 'The Fall', 'Trending Now', 93, 2013, '18+', 3),
   createMovie('m15', 'Mindhunter', 'Trending Now', 96, 2017, '18+', 2),
 
-  // Netflix Originals
-  createMovie('m16', 'Daredevil', 'Netflix Originals', 94, 2015, '18+', 3),
-  createMovie('m17', 'The Punisher', 'Netflix Originals', 93, 2017, '18+', 2),
-  createMovie('m18', 'Jessica Jones', 'Netflix Originals', 91, 2015, '18+', 3),
-  createMovie('m19', 'Luke Cage', 'Netflix Originals', 90, 2016, '18+', 2),
-  createMovie('m20', 'Iron Fist', 'Netflix Originals', 85, 2017, '16+', 2),
-  createMovie('m21', 'The Defenders', 'Netflix Originals', 89, 2017, '16+', 1),
-  createMovie('m22', 'Godless', 'Netflix Originals', 92, 2017, '18+', 1),
-  createMovie('m23', 'Marco Polo', 'Netflix Originals', 88, 2014, '18+', 2),
-  createMovie('m24', 'Altered Carbon', 'Netflix Originals', 91, 2018, '18+', 2),
-  createMovie('m25', 'Cyberpunk: Edgerunners', 'Netflix Originals', 95, 2022, '18+', 1),
-  createMovie('m26', 'Arcane', 'Netflix Originals', 97, 2021, '16+', 2),
-  createMovie('m27', 'Castlevania', 'Netflix Originals', 94, 2017, '18+', 4),
-  createMovie('m28', 'Castlevania: Nocturne', 'Netflix Originals', 92, 2023, '18+', 1),
-  createMovie('m29', 'Rebel Moon', 'Netflix Originals', 87, 2023, '16+'),
-  createMovie('m30', 'The Platform', 'Netflix Originals', 90, 2019, '18+'),
+  // Netflex Originals
+  createMovie('m16', 'Daredevil', 'Netflex Originals', 94, 2015, '18+', 3),
+  createMovie('m17', 'The Punisher', 'Netflex Originals', 93, 2017, '18+', 2),
+  createMovie('m18', 'Jessica Jones', 'Netflex Originals', 91, 2015, '18+', 3),
+  createMovie('m19', 'Luke Cage', 'Netflex Originals', 90, 2016, '18+', 2),
+  createMovie('m20', 'Iron Fist', 'Netflex Originals', 85, 2017, '16+', 2),
+  createMovie('m21', 'The Defenders', 'Netflex Originals', 89, 2017, '16+', 1),
+  createMovie('m22', 'Godless', 'Netflex Originals', 92, 2017, '18+', 1),
+  createMovie('m23', 'Marco Polo', 'Netflex Originals', 88, 2014, '18+', 2),
+  createMovie('m24', 'Altered Carbon', 'Netflex Originals', 91, 2018, '18+', 2),
+  createMovie('m25', 'Cyberpunk: Edgerunners', 'Netflex Originals', 95, 2022, '18+', 1),
+  createMovie('m26', 'Arcane', 'Netflex Originals', 97, 2021, '16+', 2),
+  createMovie('m27', 'Castlevania', 'Netflex Originals', 94, 2017, '18+', 4),
+  createMovie('m28', 'Castlevania: Nocturne', 'Netflex Originals', 92, 2023, '18+', 1),
+  createMovie('m29', 'Rebel Moon', 'Netflex Originals', 87, 2023, '16+'),
+  createMovie('m30', 'The Platform', 'Netflex Originals', 90, 2019, '18+'),
 
   // Critically Acclaimed Dramas
   createMovie('m31', 'The Crown', 'Critically Acclaimed Dramas', 94, 2016, '16+', 6),
@@ -147,7 +147,7 @@ const moviesData: Movie[] = [
 
 export const categories: Category[] = [
   { id: 'cat1', name: 'Trending Now', movies: moviesData.filter(m => m.category === 'Trending Now') },
-  { id: 'cat2', name: 'Netflix Originals', movies: moviesData.filter(m => m.category === 'Netflix Originals') },
+  { id: 'cat2', name: 'Netflex Originals', movies: moviesData.filter(m => m.category === 'Netflex Originals') },
   { id: 'cat3', name: 'Critically Acclaimed Dramas', movies: moviesData.filter(m => m.category === 'Critically Acclaimed Dramas') },
   { id: 'cat4', name: 'Thrilling Series & Movies', movies: moviesData.filter(m => m.category === 'Thrilling Series & Movies') },
   { id: 'cat5', name: 'Award-Winning Content', movies: moviesData.filter(m => m.category === 'Award-Winning Content') },

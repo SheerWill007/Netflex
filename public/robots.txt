@@ -1,4 +1,4 @@
-# robots.txt for Netflix Clone
+# robots.txt for Netflex
 User-agent: *
 Allow: /
 

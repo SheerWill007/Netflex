@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo   Netflix Clone - Installation
+echo   Netflex - Installation
 echo ========================================
 echo.
 

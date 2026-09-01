@@ -1,6 +1,6 @@
-# Quick Start - Netflix Clone
+# Quick Start - Netflex
 
-Get your Netflix Clone running in 3 steps!
+Get your Netflex running in 3 steps!
 
 ## Prerequisites
 
@@ -61,7 +61,7 @@ npm run install:all
 
 ## Next Steps
 
-1. Add logo to `/public/netflix.png`
+1. Add logo to `/public/netflex.png`
 2. Read `README.md`
 3. Start coding!
 

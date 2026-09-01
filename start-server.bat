@@ -1,6 +1,6 @@
 @echo off
 echo ========================================
-echo   Netflix Clone - Backend Only
+echo   Netflex - Backend Only
 echo ========================================
 echo.
 echo Starting backend on http://localhost:5000

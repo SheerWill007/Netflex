@@ -1,36 +1,36 @@
-# How to Add Your Netflix Logo
+# How to Add Your Netflex Logo
 
-This guide explains how to add a Netflix logo as your favicon.
+This guide explains how to add a logo as your favicon.
 
 ## 📥 Option 1: Download from the Web
 
 ### Method A: Create Your Own
 1. Go to a favicon generator: https://favicon.io/
-2. Create a custom favicon with text "N" in Netflix style
+2. Create a custom favicon with text "N" in Netflex style
 3. Use these settings:
    - Text: **N**
    - Font: **Bebas Neue** or similar
-   - Background: **#E50914** (Netflix Red)
+   - Background: **#E50914** (Red)
    - Text Color: **#FFFFFF** (White)
    - Size: **64x64px**
 4. Download the generated `favicon.png`
-5. Rename it to `netflix.png`
-6. Replace the file in this folder (`/public/netflix.png`)
+5. Rename it to `netflex.png`
+6. Replace the file in this folder (`/public/netflex.png`)
 
 ### Method B: Use Icon Libraries
 1. Visit: https://www.iconfinder.com/ or https://www.flaticon.com/
 2. Search for "streaming" or "video" icons
 3. Download a suitable icon (64x64px recommended)
-4. Rename to `netflix.png`
+4. Rename to `netflex.png`
 5. Place in `/public/` folder
 
 ## 🎨 Option 2: Create with Design Tools
 
 ### Using Photoshop/GIMP:
 1. Create a new image: 64x64 pixels
-2. Background: #E50914 (Netflix red)
+2. Background: #E50914 (red)
 3. Add white letter "N" in Bebas Neue font
-4. Export as PNG: `netflix.png`
+4. Export as PNG: `netflex.png`
 5. Save to `/public/` folder
 
 ### Using Canva:
@@ -64,9 +64,9 @@ Create a simple favicon with code:
 - **SVG** (scalable)
 
 ### Colors
-- **Background**: #E50914 (Netflix Red)
+- **Background**: #E50914 (Red)
 - **Text/Icon**: #FFFFFF (White)
-- **Alternative**: #141414 (Netflix Dark)
+- **Alternative**: #141414 (Dark background)
 
 ## 🔄 After Adding the Logo
 
@@ -102,7 +102,7 @@ For a complete PWA experience, add these icons:
 
 ```
 public/
-├── netflix.png          (64x64)   - Favicon
+├── netflex.png          (64x64)   - Favicon
 ├── logo-192.png        (192x192)  - Android icon
 ├── logo-512.png        (512x512)  - Android icon
 └── apple-touch-icon.png (180x180) - iOS icon
@@ -111,7 +111,7 @@ public/
 Then update `client/index.html`:
 
 ```html
-<link rel="icon" type="image/png" href="/netflix.png" />
+<link rel="icon" type="image/png" href="/netflex.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 ```
 
@@ -121,7 +121,7 @@ And update `public/manifest.json`:
 {
   "icons": [
     {
-      "src": "/netflix.png",
+      "src": "/netflex.png",
       "sizes": "64x64",
       "type": "image/png"
     },
@@ -141,25 +141,25 @@ And update `public/manifest.json`:
 
 ## 🎨 Quick Text-Based Favicon
 
-If you want a super quick solution, create this file as `netflix.png`:
+If you want a super quick solution, create this file as `netflex.png`:
 
 **Simple Red Square with "N":**
 1. Use any image editor
 2. Create 64x64px image
 3. Fill with red: `#E50914`
 4. Add white "N" in center
-5. Save as `netflix.png`
+5. Save as `netflex.png`
 
 ## 🚫 Copyright Notice
 
-**Important**: The Netflix logo and brand are trademarked by Netflix, Inc.
+**Important**: The Netflex name and this project are for educational purposes only.
 
 This project is for:
 - ✅ Learning and education
 - ✅ Personal portfolio
 - ✅ Code demonstration
 - ❌ NOT for commercial use
-- ❌ NOT to impersonate Netflix
+- ❌ NOT to impersonate any streaming service
 
 Always create your own variation or use generic streaming icons for public projects.
 
@@ -169,12 +169,12 @@ Always create your own variation or use generic streaming icons for public proje
 
 1. **Check file location**
    ```
-   netflix/public/netflix.png  ← Should be here
+   netflex/public/netflex.png  ← Should be here
    ```
 
 2. **Check file name** (case-sensitive)
-   - Correct: `netflix.png`
-   - Wrong: `Netflix.png` or `NETFLIX.png`
+   - Correct: `netflex.png`
+   - Wrong: `Netflex.png` or `NETFLEX.png`
 
 3. **Clear browser cache**
    - Hard refresh: Ctrl + F5
@@ -187,7 +187,7 @@ Always create your own variation or use generic streaming icons for public proje
 5. **Verify in DevTools**
    - Open DevTools (F12)
    - Go to Network tab
-   - Look for `netflix.png`
+   - Look for `netflex.png`
    - Should show 200 status
 
 ### Still Not Working?
