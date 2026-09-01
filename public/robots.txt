@@ -1,0 +1,6 @@
+# robots.txt for Netflix Clone
+User-agent: *
+Allow: /
+
+# Sitemap location (update when deployed)
+# Sitemap: https://your-domain.com/sitemap.xml

@@ -6,11 +6,14 @@ import path from 'path';
 import moviesRouter from './routes/movies';
 import authRouter from './routes/auth';
 import watchlistRouter from './routes/watchlist';
+import { CORS_OPTIONS, SERVER_CONFIG, API_PREFIX } from './config/constants';
+import { errorHandler } from './utils/errorHandler';
+import { logger } from './utils/logger';
 
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env.PORT || 5000;
+const PORT = SERVER_CONFIG.port;
 
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
   .split(',')
@@ -25,21 +28,48 @@ app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/movies', moviesRouter);
-app.use('/api/auth', authRouter);
-app.use('/api/watchlist', watchlistRouter);
-
-app.get('/api/health', (_req: Request, res: Response) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+// Request logging
+app.use((req: Request, _res: Response, next) => {
+  logger.info(`${req.method} ${req.path}`);
+  next();
 });
 
+// API Routes
+app.use(`${API_PREFIX}/movies`, moviesRouter);
+app.use(`${API_PREFIX}/auth`, authRouter);
+app.use(`${API_PREFIX}/watchlist`, watchlistRouter);
+
+// Health check
+app.get(`${API_PREFIX}/health`, (_req: Request, res: Response) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: SERVER_CONFIG.env,
+  });
+});
+
+// Root endpoint
+app.get('/', (_req: Request, res: Response) => {
+  res.json({
+    message: 'Netflix Clone API',
+    version: '1.0.0',
+    endpoints: {
+      health: `${API_PREFIX}/health`,
+      movies: `${API_PREFIX}/movies`,
+      auth: `${API_PREFIX}/auth`,
+      watchlist: `${API_PREFIX}/watchlist`,
+    },
+  });
+});
+
+// Production: Serve static files
 if (process.env.NODE_ENV === 'production') {
   const clientDist = path.resolve(__dirname, '../../client/dist');
   const clientIndex = path.join(clientDist, 'index.html');
   const hasClientBuild = fs.existsSync(clientIndex);
 
   if (!hasClientBuild) {
-    console.warn(
+    logger.warn(
       `Production mode is enabled, but the frontend build was not found at ${clientIndex}. ` +
       'The API will continue running without serving the React app. Ensure the client build is generated before deployment.'
     );
@@ -55,19 +85,21 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+// 404 handler
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(error);
-  res.status(500).json({ error: 'Internal server error' });
-});
+// Error handler (must be last)
+app.use(errorHandler);
 
+// Start server
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.success(`🚀 Server running on http://localhost:${PORT}`);
+    logger.info(`📊 Environment: ${SERVER_CONFIG.env}`);
+    logger.info(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`);
+    logger.info(`📡 API available at: http://localhost:${PORT}${API_PREFIX}`);
   });
 }
 
