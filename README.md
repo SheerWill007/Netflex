@@ -23,6 +23,13 @@ npm run dev
 http://localhost:3000
 ```
 
+## Vercel Deployment
+
+Set `NEXT_PUBLIC_API_URL` in the Vercel project environment variables to the
+deployed server URL, including `/api` (for example,
+`https://your-server.example.com/api`). The local fallback is only intended for
+development.
+
 ---
 
 ## Features
