@@ -18,8 +18,8 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: 'Netflex - Watch Movies & TV Shows',
-  description: 'A full-stack streaming platform built with Next.js, TypeScript, and Express',
+  title: 'Netflex — Stories that stay with you',
+  description: 'Discover your next favorite story with Netflex.',
   icons: {
     icon: '/netflex.png',
     apple: '/netflex.png',
