@@ -1,9 +1,18 @@
 export type MediaType = 'movie' | 'series';
 
-export interface StreamSource {
+export interface ArchiveSource {
   provider: 'archive';
   id: string;
 }
+
+/** Self-hosted film on Bunny Stream, played as adaptive HLS */
+export interface BunnySource {
+  provider: 'bunny';
+  id: string;
+  playbackUrl: string;
+}
+
+export type StreamSource = ArchiveSource | BunnySource;
 
 export interface Episode {
   id: string;

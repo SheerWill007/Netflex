@@ -79,6 +79,65 @@
   background: #000;
 }
 
+/* ===== Self-hosted (HLS) player ===== */
+.hls {
+  position: relative;
+  width: min(100%, calc((100vh - 120px) * 16 / 9));
+}
+
+.hls__video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.hls__error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.85);
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.hls__tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.hls__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.hls__chip:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.hls__chip select {
+  background: transparent;
+  color: #fff;
+  border: none;
+  font: inherit;
+}
+
+.hls__chip option {
+  color: #000;
+}
+
 .player__credit {
   text-align: center;
   font-size: 0.8rem;

@@ -1,11 +1,22 @@
 export type MediaType = 'movie' | 'series';
 
-/** Where a title (or episode) streams from. Only openly licensed sources are allowed. */
-export interface StreamSource {
+/** Internet Archive item, embeddable at https://archive.org/embed/<id> */
+export interface ArchiveSource {
   provider: 'archive';
-  /** Internet Archive item identifier, embeddable at https://archive.org/embed/<id> */
   id: string;
 }
+
+/** A film uploaded to Bunny Stream and played as adaptive HLS */
+export interface BunnySource {
+  provider: 'bunny';
+  /** Bunny Stream video GUID */
+  id: string;
+  /** HLS playlist, filled in by the API from BUNNY_CDN_HOSTNAME */
+  playbackUrl: string;
+}
+
+/** Where a title (or episode) streams from */
+export type StreamSource = ArchiveSource | BunnySource;
 
 export interface Episode {
   id: string;

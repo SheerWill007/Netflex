@@ -7,9 +7,16 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "upload-films": "ts-node src/scripts/uploadFilms.ts"
   },
-  "keywords": ["netflex", "streaming", "api", "express", "typescript"],
+  "keywords": [
+    "netflex",
+    "streaming",
+    "api",
+    "express",
+    "typescript"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
