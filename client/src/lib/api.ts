@@ -1,35 +1,35 @@
-import axios from 'axios';
-import type { Category, HeroContent, Movie } from '@/types';
+import type { Category, FeaturedTitle, MediaType, Movie, StreamSource } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+/**
+ * Server components call the Express API directly. In the browser, requests go to
+ * same-origin /api, which next.config.js rewrites to the API.
+ */
+const API_URL =
+  typeof window === 'undefined'
+    ? process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+    : '/api';
 
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+async function get<T>(path: string): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 300 } });
+  if (!res.ok) {
+    throw new Error(`API ${path} failed with ${res.status}`);
+  }
+  return res.json() as Promise<T>;
+}
 
-export const fetchHeroContent = async (): Promise<HeroContent> => {
-  const response = await api.get<HeroContent>('/movies/hero');
-  return response.data;
-};
+export const fetchFeatured = () => get<FeaturedTitle[]>('/movies/featured');
 
-export const fetchCategories = async (): Promise<Category[]> => {
-  const response = await api.get<Category[]>('/movies/categories');
-  return response.data;
-};
+export const fetchCategories = (type?: MediaType) =>
+  get<Category[]>(`/movies/categories${type ? `?type=${type}` : ''}`);
 
-export const fetchMovieById = async (id: string): Promise<Movie> => {
-  const response = await api.get<Movie>(`/movies/${id}`);
-  return response.data;
-};
+export const fetchMoviesByIds = (ids: string[]) =>
+  ids.length ? get<Movie[]>(`/movies?ids=${ids.map(encodeURIComponent).join(',')}`) : Promise.resolve([]);
 
-export const searchMovies = async (query: string): Promise<Movie[]> => {
-  const response = await api.get<Movie[]>('/movies/search', {
-    params: { q: query },
-  });
-  return response.data;
-};
+export const searchMovies = (query: string) =>
+  get<Movie[]>(`/movies/search?q=${encodeURIComponent(query)}`);
 
-export default api;
+export const embedUrl = (source: StreamSource) =>
+  `https://archive.org/embed/${encodeURIComponent(source.id)}?autoplay=1`;
+
+export const sourcePageUrl = (source: StreamSource) =>
+  `https://archive.org/details/${encodeURIComponent(source.id)}`;

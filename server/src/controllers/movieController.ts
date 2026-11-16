@@ -1,95 +1,85 @@
 import { Request, Response } from 'express';
-import { categories, heroContent } from '../data/movies';
+import moviesData, { categories, featured } from '../data/movies';
+import { MediaType } from '../types';
 
-/**
- * Get hero content for the main banner
- */
-export const getHeroContent = (_req: Request, res: Response) => {
-  try {
-    res.json(heroContent);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch hero content' });
-  }
+function parseType(value: unknown): MediaType | undefined {
+  return value === 'movie' || value === 'series' ? value : undefined;
+}
+
+/** Featured titles for the rotating hero banner */
+export const getFeatured = (_req: Request, res: Response) => {
+  res.json(featured);
 };
 
-/**
- * Get all categories with their movies
- */
-export const getAllCategories = (_req: Request, res: Response) => {
-  try {
-    res.json(categories);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch categories' });
+/** Categories with their titles. Optional ?type=movie|series filters titles and drops empty rows. */
+export const getAllCategories = (req: Request, res: Response) => {
+  const type = parseType(req.query.type);
+  if (!type) {
+    return res.json(categories);
   }
+  res.json(
+    categories
+      .map((cat) => ({ ...cat, movies: cat.movies.filter((m) => m.type === type) }))
+      .filter((cat) => cat.movies.length > 0)
+  );
 };
 
-/**
- * Get a specific category by ID
- */
 export const getCategoryById = (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const category = categories.find(cat => cat.id === id);
-    
-    if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
-    }
-    
-    res.json(category);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch category' });
+  const category = categories.find((cat) => cat.id === req.params.id);
+  if (!category) {
+    return res.status(404).json({ error: 'Category not found' });
   }
+  res.json(category);
 };
 
-/**
- * Get all movies across all categories
- */
-export const getAllMovies = (_req: Request, res: Response) => {
-  try {
-    const allMovies = categories.flatMap(cat => cat.movies);
-    res.json(allMovies);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch movies' });
+/** All titles. Optional ?type=movie|series, ?ids=a,b,c (keeps the requested order). */
+export const getAllMovies = (req: Request, res: Response) => {
+  const type = parseType(req.query.type);
+  let results = moviesData;
+
+  if (typeof req.query.ids === 'string') {
+    const ids = req.query.ids.split(',').map((id) => id.trim()).filter(Boolean).slice(0, 200);
+    results = ids
+      .map((id) => moviesData.find((m) => m.id === id))
+      .filter((m): m is NonNullable<typeof m> => Boolean(m));
   }
+
+  if (type) {
+    results = results.filter((m) => m.type === type);
+  }
+  res.json(results);
 };
 
-/**
- * Get a specific movie by ID
- */
 export const getMovieById = (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const allMovies = categories.flatMap(cat => cat.movies);
-    const movie = allMovies.find(m => m.id === id);
-    
-    if (!movie) {
-      return res.status(404).json({ error: 'Movie not found' });
-    }
-    
-    res.json(movie);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch movie' });
+  const movie = moviesData.find((m) => m.id === req.params.id);
+  if (!movie) {
+    return res.status(404).json({ error: 'Movie not found' });
   }
+  res.json(movie);
 };
 
-/**
- * Search movies by title
- */
+/** Search titles, genres and descriptions */
 export const searchMovies = (req: Request, res: Response) => {
-  try {
-    const { q } = req.query;
-    
-    if (!q || typeof q !== 'string') {
-      return res.status(400).json({ error: 'Query parameter "q" is required' });
-    }
-    
-    const allMovies = categories.flatMap(cat => cat.movies);
-    const results = allMovies.filter(movie => 
-      movie.title.toLowerCase().includes(q.toLowerCase())
-    );
-    
-    res.json(results);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to search movies' });
+  const { q } = req.query;
+  if (!q || typeof q !== 'string' || !q.trim()) {
+    return res.status(400).json({ error: 'Query parameter "q" is required' });
   }
+
+  const needle = q.trim().toLowerCase().slice(0, 100);
+  const score = (text: string, weight: number) => (text.toLowerCase().includes(needle) ? weight : 0);
+
+  const results = moviesData
+    .map((m) => ({
+      movie: m,
+      score:
+        score(m.title, 10) +
+        m.genres.reduce((sum, g) => sum + score(g, 4), 0) +
+        score(m.category, 3) +
+        score(m.description, 1),
+    }))
+    .filter((r) => r.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map((r) => r.movie);
+
+  res.json(results);
 };

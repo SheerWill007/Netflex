@@ -1,62 +1,50 @@
 'use client';
 
 import type { Movie } from '@/types';
+import { useBrowse } from './BrowseProvider';
+import { CheckIcon, InfoIcon, PlayIcon, PlusIcon } from './Icons';
 import '@/styles/MovieCard.css';
 
-interface MovieCardProps {
-  movie: Movie;
-}
-
-const MovieCard = ({ movie }: MovieCardProps) => {
-  const thumbStyle = {
-    backgroundImage: `url('${movie.imageUrl}')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  };
+export default function MovieCard({ movie }: { movie: Movie }) {
+  const { play, openDetails, toggleList, isInList } = useBrowse();
+  const saved = isInList(movie.id);
 
   return (
-    <div className="card">
-      <div className="card__thumb" style={thumbStyle}>
+    <article className="card">
+      <button
+        className="card__thumb"
+        style={{ backgroundImage: `url("${movie.imageUrl}")` }}
+        onClick={() => openDetails(movie)}
+        aria-label={`${movie.title} — details`}
+      >
+        {movie.type === 'series' && <span className="card__tag">SERIES</span>}
         <span className="card__label">{movie.title}</span>
-      </div>
-      <div className="card__overlay">
-        <p className="card__overlay-title">{movie.title}</p>
-        <div className="card__overlay-actions">
-          <button className="mini-btn mini-btn--play" aria-label="Play">
-            <svg viewBox="0 0 24 24">
-              <path d="M6 4l14 8-14 8V4z" fill="currentColor" />
-            </svg>
+      </button>
+      <div className="card__panel">
+        <div className="card__actions">
+          <button className="mini-btn mini-btn--play" aria-label={`Play ${movie.title}`} onClick={() => play(movie)}>
+            <PlayIcon />
           </button>
-          <button className="mini-btn" aria-label="Add to list">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 5v14M5 12h14"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-              />
-            </svg>
+          <button
+            className={`mini-btn ${saved ? 'mini-btn--on' : ''}`}
+            aria-label={saved ? `Remove ${movie.title} from My List` : `Add ${movie.title} to My List`}
+            aria-pressed={saved}
+            onClick={() => toggleList(movie.id)}
+          >
+            {saved ? <CheckIcon /> : <PlusIcon />}
           </button>
-          <button className="mini-btn" aria-label="Like">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M7 10v10M3 12v6a2 2 0 002 2h10.5a2 2 0 002-1.6l1.3-6A2 2 0 0016.8 10H13l1-4.5A1.5 1.5 0 0012.6 4L7 10z"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                fill="none"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <button className="mini-btn mini-btn--end" aria-label={`More about ${movie.title}`} onClick={() => openDetails(movie)}>
+            <InfoIcon />
           </button>
         </div>
-        <p className="card__overlay-meta">
-          <span className="match">{movie.rating}% Match</span>
-          {movie.isHD && <span className="hd">HD</span>}
+        <p className="card__title">{movie.title}</p>
+        <p className="card__meta">
+          <span className="card__rating">{movie.maturityRating}</span>
+          {movie.year && <span>{movie.year}</span>}
+          {movie.episodes && <span>{movie.episodes.length} ep</span>}
         </p>
+        <p className="card__genres">{movie.genres.slice(0, 3).join(' • ')}</p>
       </div>
-    </div>
+    </article>
   );
-};
-
-export default MovieCard;
+}

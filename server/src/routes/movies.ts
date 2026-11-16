@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  getHeroContent,
+  getFeatured,
   getAllCategories,
   getCategoryById,
   getAllMovies,
@@ -10,14 +10,11 @@ import {
 
 const router = Router();
 
-// Hero content
-router.get('/hero', getHeroContent);
+router.get('/featured', getFeatured);
 
-// Categories
 router.get('/categories', getAllCategories);
 router.get('/categories/:id', getCategoryById);
 
-// Movies
 router.get('/search', searchMovies); // Must be before /:id
 router.get('/', getAllMovies);
 router.get('/:id', getMovieById);

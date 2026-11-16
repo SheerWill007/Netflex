@@ -1,160 +1,406 @@
-import { Movie, Category, HeroContent } from '../types';
+import { Category, Episode, FeaturedTitle, Movie, MediaType } from '../types';
 
-const createMovie = (
-  id: string,
-  title: string,
-  category: string,
-  rating: number,
-  year?: number,
-  maturityRating?: string,
-  seasons?: number
-): Movie => ({
-  id,
-  title,
-  imageUrl: `https://picsum.photos/seed/${encodeURIComponent(id)}/800/450`,
-  category,
-  rating,
-  year,
-  maturityRating,
-  seasons,
-  isHD: true,
-  type: seasons ? 'series' : 'movie',
-  description: `${title} is a captivating ${category.toLowerCase()} that has earned a ${rating}% match rating.`
-});
+/**
+ * Catalogue of titles that are free to stream legally.
+ *
+ * Every entry is either in the public domain or released under a Creative Commons
+ * licence, and streams from the Internet Archive's embeddable player. Identifiers were
+ * checked against archive.org; licences are as recorded on each archive.org item page.
+ * Descriptions are written for this project.
+ *
+ * To add a title: find it on archive.org, confirm its licence on the item page, and add
+ * an entry using the item identifier from the URL (archive.org/details/<identifier>).
+ */
 
-export const heroContent: HeroContent = {
-  id: 'hero-1',
-  title: 'Ember & Static',
-  description: 'When a small-town radio host starts picking up signals from a future no one has lived yet, she has to decide how much of tomorrow anyone deserves to know.',
-  tag: 'N-CLONE ORIGINAL',
-  imageUrl: 'https://picsum.photos/seed/ember-static/1920/1080',
-  rating: 98,
-  year: 2026,
-  maturityRating: '16+',
-  seasons: 3,
-  isHD: true
-};
+const ARCHIVE = 'https://archive.org';
+const thumb = (archiveId: string) => `${ARCHIVE}/services/img/${encodeURIComponent(archiveId)}`;
+const file = (archiveId: string, name: string) =>
+  `${ARCHIVE}/download/${encodeURIComponent(archiveId)}/${encodeURIComponent(name)}`;
+
+interface MovieInput {
+  id: string;
+  archiveId: string;
+  title: string;
+  category: string;
+  genres: string[];
+  year?: number;
+  rating?: string;
+  description: string;
+  license?: string;
+  credit?: string;
+  posterUrl?: string;
+}
+
+function movie(input: MovieInput): Movie {
+  return {
+    id: input.id,
+    title: input.title,
+    description: input.description,
+    imageUrl: thumb(input.archiveId),
+    posterUrl: input.posterUrl,
+    category: input.category,
+    genres: input.genres,
+    year: input.year,
+    maturityRating: input.rating ?? '13+',
+    type: 'movie',
+    license: input.license ?? 'Public domain',
+    credit: input.credit,
+    source: { provider: 'archive', id: input.archiveId },
+  };
+}
+
+interface SeriesInput extends Omit<MovieInput, 'archiveId'> {
+  episodes: Array<[archiveId: string, title: string]>;
+}
+
+function series(input: SeriesInput): Movie {
+  const episodes: Episode[] = input.episodes.map(([archiveId, title], index) => ({
+    id: `${input.id}-e${index + 1}`,
+    title,
+    source: { provider: 'archive', id: archiveId },
+  }));
+  return {
+    id: input.id,
+    title: input.title,
+    description: input.description,
+    imageUrl: thumb(input.episodes[0][0]),
+    category: input.category,
+    genres: input.genres,
+    year: input.year,
+    maturityRating: input.rating ?? '7+',
+    type: 'series' as MediaType,
+    license: input.license ?? 'Public domain',
+    episodes,
+  };
+}
+
+const BLENDER_CREDIT = '© Blender Foundation | www.blender.org — licensed CC BY 3.0';
 
 const moviesData: Movie[] = [
-  // Trending Now
-  createMovie('m1', 'Stranger Things', 'Trending Now', 96, 2016, '16+', 4),
-  createMovie('m2', 'The Crown', 'Trending Now', 94, 2016, '16+', 6),
-  createMovie('m3', 'Squid Game', 'Trending Now', 95, 2021, '18+', 2),
-  createMovie('m4', 'Wednesday', 'Trending Now', 93, 2022, '13+', 1),
-  createMovie('m5', 'Bridgerton', 'Trending Now', 92, 2020, '16+', 3),
-  createMovie('m6', 'The Witcher', 'Trending Now', 91, 2019, '18+', 3),
-  createMovie('m7', 'Money Heist', 'Trending Now', 94, 2017, '16+', 5),
-  createMovie('m8', 'Ozark', 'Trending Now', 95, 2017, '18+', 4),
-  createMovie('m9', 'Narcos', 'Trending Now', 93, 2015, '18+', 3),
-  createMovie('m10', 'Dark', 'Trending Now', 97, 2017, '16+', 3),
-  createMovie('m11', 'Outer Banks', 'Trending Now', 90, 2020, '16+', 3),
-  createMovie('m12', 'You', 'Trending Now', 92, 2018, '18+', 4),
-  createMovie('m13', 'The Diplomat', 'Trending Now', 91, 2023, '16+', 1),
-  createMovie('m14', 'The Fall', 'Trending Now', 93, 2013, '18+', 3),
-  createMovie('m15', 'Mindhunter', 'Trending Now', 96, 2017, '18+', 2),
+  // ---------- Open Movies (Creative Commons) ----------
+  movie({
+    id: 'sintel', archiveId: 'Sintel', title: 'Sintel', category: 'Open Movies',
+    genres: ['Fantasy', 'Adventure', 'Animation'], year: 2010, rating: '13+',
+    license: 'CC BY 3.0', credit: BLENDER_CREDIT, posterUrl: file('Sintel', 'Poster.jpg'),
+    description: 'A lone young woman crosses snowbound mountains and sprawling markets in search of the baby dragon she once rescued, and learns too late what the search has cost her.',
+  }),
+  movie({
+    id: 'tears-of-steel', archiveId: 'Tears-of-Steel', title: 'Tears of Steel', category: 'Open Movies',
+    genres: ['Sci-Fi', 'Action'], year: 2012, rating: '13+',
+    license: 'CC BY 3.0', credit: BLENDER_CREDIT, posterUrl: file('Tears-of-Steel', 'tos-poster.jpg'),
+    description: 'In a future Amsterdam overrun by robots, a band of scientists stages a last-ditch experiment to rewrite a painful breakup that set the machines in motion.',
+  }),
+  movie({
+    id: 'big-buck-bunny', archiveId: 'BigBuckBunny_124', title: 'Big Buck Bunny', category: 'Open Movies',
+    genres: ['Comedy', 'Animation', 'Family'], year: 2008, rating: 'All',
+    license: 'CC BY 3.0', credit: BLENDER_CREDIT,
+    description: 'A gentle giant of a rabbit has had enough of three woodland bullies, and plots an elaborate, slapstick revenge.',
+  }),
+  movie({
+    id: 'elephants-dream', archiveId: 'ElephantsDream', title: 'Elephants Dream', category: 'Open Movies',
+    genres: ['Sci-Fi', 'Animation', 'Surreal'], year: 2006, rating: '7+',
+    license: 'CC BY 3.0', credit: BLENDER_CREDIT,
+    description: 'Two men explore an endless, shifting machine-world — one convinced he built it, the other beginning to doubt it exists at all.',
+  }),
+  movie({
+    id: 'sita-sings-the-blues', archiveId: 'Sita_Sings_the_Blues', title: 'Sita Sings the Blues', category: 'Open Movies',
+    genres: ['Animation', 'Musical', 'Romance'], year: 2008, rating: '13+',
+    license: 'CC0 (public domain dedication)', credit: 'By Nina Paley',
+    description: 'An ancient Indian epic and a modern breakup are retold side by side in a hand-animated musical, set to 1920s jazz recordings.',
+  }),
+  movie({
+    id: 'star-wreck', archiveId: 'StarWreckInThePirkining', title: 'Star Wreck: In the Pirkining', category: 'Open Movies',
+    genres: ['Sci-Fi', 'Comedy', 'Parody'], year: 2005, rating: '13+',
+    license: 'CC BY-SA 3.0', credit: 'Star Wreck Studios',
+    description: 'A fan-made Finnish space comedy in which a hapless starship captain stumbles into an interdimensional war.',
+  }),
 
-  // Netflex Originals
-  createMovie('m16', 'Daredevil', 'Netflex Originals', 94, 2015, '18+', 3),
-  createMovie('m17', 'The Punisher', 'Netflex Originals', 93, 2017, '18+', 2),
-  createMovie('m18', 'Jessica Jones', 'Netflex Originals', 91, 2015, '18+', 3),
-  createMovie('m19', 'Luke Cage', 'Netflex Originals', 90, 2016, '18+', 2),
-  createMovie('m20', 'Iron Fist', 'Netflex Originals', 85, 2017, '16+', 2),
-  createMovie('m21', 'The Defenders', 'Netflex Originals', 89, 2017, '16+', 1),
-  createMovie('m22', 'Godless', 'Netflex Originals', 92, 2017, '18+', 1),
-  createMovie('m23', 'Marco Polo', 'Netflex Originals', 88, 2014, '18+', 2),
-  createMovie('m24', 'Altered Carbon', 'Netflex Originals', 91, 2018, '18+', 2),
-  createMovie('m25', 'Cyberpunk: Edgerunners', 'Netflex Originals', 95, 2022, '18+', 1),
-  createMovie('m26', 'Arcane', 'Netflex Originals', 97, 2021, '16+', 2),
-  createMovie('m27', 'Castlevania', 'Netflex Originals', 94, 2017, '18+', 4),
-  createMovie('m28', 'Castlevania: Nocturne', 'Netflex Originals', 92, 2023, '18+', 1),
-  createMovie('m29', 'Rebel Moon', 'Netflex Originals', 87, 2023, '16+'),
-  createMovie('m30', 'The Platform', 'Netflex Originals', 90, 2019, '18+'),
+  // ---------- Classic Horror ----------
+  movie({
+    id: 'night-of-the-living-dead', archiveId: 'Night.Of.The.Living.Dead_1080p', title: 'Night of the Living Dead',
+    category: 'Classic Horror', genres: ['Horror', 'Thriller'], year: 1968, rating: '16+',
+    description: 'Strangers barricade themselves inside a rural farmhouse as the recently dead rise and close in — the low-budget film that invented the modern zombie.',
+  }),
+  movie({
+    id: 'house-on-haunted-hill', archiveId: 'house_on_haunted_hill_ipod', title: 'House on Haunted Hill',
+    category: 'Classic Horror', genres: ['Horror', 'Mystery'], year: 1959, rating: '13+',
+    description: 'An eccentric millionaire offers five guests a fortune to survive one night locked in a house with a murderous past.',
+  }),
+  movie({
+    id: 'carnival-of-souls', archiveId: 'CarnivalofSouls', title: 'Carnival of Souls',
+    category: 'Classic Horror', genres: ['Horror', 'Psychological'], year: 1962, rating: '13+',
+    description: 'After surviving a car accident, a church organist is drawn toward an abandoned lakeside pavilion and the pale figures who seem to be waiting for her.',
+  }),
+  movie({
+    id: 'cabinet-of-dr-caligari', archiveId: 'DasKabinettdesDoktorCaligariTheCabinetofDrCaligari', title: 'The Cabinet of Dr. Caligari',
+    category: 'Classic Horror', genres: ['Horror', 'Silent', 'Expressionist'], year: 1919, rating: '13+',
+    description: 'A fairground hypnotist and his sleepwalking servant are linked to a string of murders in a town built of jagged, painted shadows.',
+  }),
+  movie({
+    id: 'phantom-of-the-opera', archiveId: 'ThePhantomoftheOpera', title: 'The Phantom of the Opera',
+    category: 'Classic Horror', genres: ['Horror', 'Silent', 'Drama'], year: 1925, rating: '13+',
+    description: 'A masked figure haunting the Paris Opera House becomes obsessed with a young singer and will do anything to make her a star.',
+  }),
+  movie({
+    id: 'white-zombie', archiveId: 'white_zombie', title: 'White Zombie',
+    category: 'Classic Horror', genres: ['Horror'], year: 1932, rating: '13+',
+    description: 'On a Haitian plantation, a jealous suitor turns to a sinister mill owner who commands an army of the walking dead.',
+  }),
+  movie({
+    id: 'haxan', archiveId: 'Haxan_tinted_and_subtitled', title: 'Häxan',
+    category: 'Classic Horror', genres: ['Horror', 'Silent', 'Documentary'], year: 1922, rating: '16+',
+    description: 'Part essay, part nightmare: a startling Scandinavian silent film exploring centuries of witchcraft, superstition and persecution.',
+  }),
+  movie({
+    id: 'horror-hotel', archiveId: 'Horror_Hotel', title: 'City of the Dead (Horror Hotel)',
+    category: 'Classic Horror', genres: ['Horror', 'Occult'], year: 1960, rating: '13+',
+    description: 'A student researching witchcraft travels to a fog-bound New England village where an old curse is still very much alive.',
+  }),
 
-  // Critically Acclaimed Dramas
-  createMovie('m31', 'The Crown', 'Critically Acclaimed Dramas', 94, 2016, '16+', 6),
-  createMovie('m32', 'Mindhunter', 'Critically Acclaimed Dramas', 96, 2017, '18+', 2),
-  createMovie('m33', 'The Diplomat', 'Critically Acclaimed Dramas', 91, 2023, '16+', 1),
-  createMovie('m34', 'Godless', 'Critically Acclaimed Dramas', 92, 2017, '18+', 1),
-  createMovie('m35', 'Unbelievable', 'Critically Acclaimed Dramas', 94, 2019, '18+', 1),
-  createMovie('m36', 'The Haunting of Hill House', 'Critically Acclaimed Dramas', 95, 2018, '18+', 1),
-  createMovie('m37', 'The Haunting of Bly Manor', 'Critically Acclaimed Dramas', 93, 2020, '16+', 1),
-  createMovie('m38', 'Ratched', 'Critically Acclaimed Dramas', 89, 2020, '18+', 1),
-  createMovie('m39', 'Ozark', 'Critically Acclaimed Dramas', 95, 2017, '18+', 4),
-  createMovie('m40', 'Breaking Bad', 'Critically Acclaimed Dramas', 98, 2008, '18+', 5),
-  createMovie('m41', 'Better Call Saul', 'Critically Acclaimed Dramas', 97, 2015, '16+', 6),
-  createMovie('m42', 'The Diplomat', 'Critically Acclaimed Dramas', 91, 2023, '16+', 1),
-  createMovie('m43', 'Firefly Lane', 'Critically Acclaimed Dramas', 88, 2021, '16+', 2),
-  createMovie('m44', 'Sweet Magnolias', 'Critically Acclaimed Dramas', 87, 2020, '13+', 3),
+  // ---------- Film Noir & Crime ----------
+  movie({
+    id: 'detour', archiveId: 'Detour', title: 'Detour',
+    category: 'Film Noir & Crime', genres: ['Noir', 'Crime'], year: 1945, rating: '13+',
+    description: 'A nightclub pianist hitchhiking to Los Angeles makes one bad decision on the road, and fate never lets him take it back.',
+  }),
+  movie({
+    id: 'scarlet-street', archiveId: 'ScarletStreet', title: 'Scarlet Street',
+    category: 'Film Noir & Crime', genres: ['Noir', 'Drama'], year: 1945, rating: '13+',
+    description: 'A meek cashier and amateur painter falls for a woman who sees him only as an easy mark — until the con spirals out of control.',
+  }),
+  movie({
+    id: 'the-stranger', archiveId: 'TheStranger_0', title: 'The Stranger',
+    category: 'Film Noir & Crime', genres: ['Noir', 'Thriller'], year: 1946, rating: '13+',
+    description: 'A war-crimes investigator tracks a fugitive to a quiet Connecticut town, where the man has remade himself as a respected teacher.',
+  }),
+  movie({
+    id: 'the-hitch-hiker', archiveId: 'Hitch_Hiker', title: 'The Hitch-Hiker',
+    category: 'Film Noir & Crime', genres: ['Noir', 'Thriller'], year: 1953, rating: '13+',
+    description: 'Two friends on a fishing trip pick up a stranger who turns out to be a killer, and are forced to drive him across the Mexican desert.',
+  }),
+  movie({
+    id: 'suddenly', archiveId: 'suddenly', title: 'Suddenly',
+    category: 'Film Noir & Crime', genres: ['Crime', 'Thriller'], year: 1954, rating: '13+',
+    description: 'Hired gunmen take over a hilltop house in a sleepy town to ambush the President when his train passes through.',
+  }),
+  movie({
+    id: 'impact', archiveId: 'impact', title: 'Impact',
+    category: 'Film Noir & Crime', genres: ['Noir', 'Drama'], year: 1949, rating: '13+',
+    description: 'A businessman survives his wife’s plot to kill him, starts a new life under another name, then learns he is wanted for his own murder.',
+  }),
+  movie({
+    id: 'quicksand', archiveId: 'Quicksand_clear', title: 'Quicksand',
+    category: 'Film Noir & Crime', genres: ['Noir', 'Crime'], year: 1950, rating: '13+',
+    description: 'A garage mechanic “borrows” twenty dollars from the till to impress a date, and every attempt to cover it up sinks him deeper.',
+  }),
 
-  // Thrilling Series & Movies
-  createMovie('m45', 'Bird Box', 'Thrilling Series & Movies', 89, 2018, '16+'),
-  createMovie('m46', 'You', 'Thrilling Series & Movies', 92, 2018, '18+', 4),
-  createMovie('m47', 'The Fall', 'Thrilling Series & Movies', 93, 2013, '18+', 3),
-  createMovie('m48', 'Bodyguard', 'Thrilling Series & Movies', 91, 2018, '16+', 1),
-  createMovie('m49', 'The Watcher', 'Thrilling Series & Movies', 88, 2022, '18+', 1),
-  createMovie('m50', 'Dahmer', 'Thrilling Series & Movies', 90, 2022, '18+', 1),
-  createMovie('m51', 'The Midnight Club', 'Thrilling Series & Movies', 87, 2022, '16+', 1),
-  createMovie('m52', 'Scream', 'Thrilling Series & Movies', 86, 2022, '18+'),
-  createMovie('m53', 'Fear Street Trilogy', 'Thrilling Series & Movies', 89, 2021, '18+'),
+  // ---------- Comedy Classics ----------
+  movie({
+    id: 'his-girl-friday', archiveId: 'his_girl_friday', title: 'His Girl Friday',
+    category: 'Comedy Classics', genres: ['Comedy', 'Romance'], year: 1940, rating: '7+',
+    description: 'A fast-talking newspaper editor will stop at nothing — including sabotaging her engagement — to win back his star reporter and ex-wife.',
+  }),
+  movie({
+    id: 'my-favorite-brunette', archiveId: 'my_favorite_brunette', title: 'My Favorite Brunette',
+    category: 'Comedy Classics', genres: ['Comedy', 'Mystery'], year: 1947, rating: '7+',
+    description: 'A baby photographer who dreams of being a private eye gets his wish when a mysterious woman pulls him into a murder plot.',
+  }),
+  movie({
+    id: 'the-flying-deuces', archiveId: 'TheFlyingDeuces', title: 'The Flying Deuces',
+    category: 'Comedy Classics', genres: ['Comedy'], year: 1939, rating: 'All',
+    description: 'Heartbroken in Paris, a famous comedy duo joins the French Foreign Legion and promptly makes a mess of it.',
+  }),
+  movie({
+    id: 'africa-screams', archiveId: 'AfricaScreams', title: 'Africa Screams',
+    category: 'Comedy Classics', genres: ['Comedy', 'Adventure'], year: 1949, rating: 'All',
+    description: 'A department-store clerk bluffs his way onto a safari as an expert guide, with predictably chaotic results.',
+  }),
+  movie({
+    id: 'meet-john-doe', archiveId: 'meet_john_doe', title: 'Meet John Doe',
+    category: 'Comedy Classics', genres: ['Comedy', 'Drama'], year: 1941, rating: '7+',
+    description: 'A columnist invents a fake protest letter, then hires a drifter to play its author — and a national movement takes on a life of its own.',
+  }),
+  movie({
+    id: 'royal-wedding', archiveId: 'royal_wedding', title: 'Royal Wedding',
+    category: 'Comedy Classics', genres: ['Musical', 'Romance'], year: 1951, rating: 'All',
+    description: 'A brother-and-sister song-and-dance act takes their show to London during a royal wedding and both fall in love along the way.',
+  }),
 
-  // Award-Winning Content
-  createMovie('m54', 'The Crown', 'Award-Winning Content', 94, 2016, '16+', 6),
-  createMovie('m55', 'The Queen\'s Gambit', 'Award-Winning Content', 96, 2020, '16+', 1),
-  createMovie('m56', 'Beef', 'Award-Winning Content', 95, 2023, '18+', 1),
-  createMovie('m57', 'Glass Onion', 'Award-Winning Content', 91, 2022, '13+'),
-  createMovie('m58', 'Don\'t Look Up', 'Award-Winning Content', 88, 2021, '16+'),
-  createMovie('m59', 'The Adam Project', 'Award-Winning Content', 87, 2022, '13+'),
-  createMovie('m60', 'Red Notice', 'Award-Winning Content', 86, 2021, '13+'),
-  createMovie('m61', 'Murder Mystery', 'Award-Winning Content', 85, 2019, '13+'),
-  createMovie('m62', 'All of Us Are Dead', 'Award-Winning Content', 90, 2022, '18+', 1),
+  // ---------- Silent Era ----------
+  movie({
+    id: 'the-pawnshop', archiveId: 'CC_1916_10_02_ThePawnshop', title: 'The Pawnshop',
+    category: 'Silent Era', genres: ['Comedy', 'Silent', 'Short'], year: 1916, rating: 'All',
+    description: 'A pawnbroker’s assistant wreaks havoc on the shop, his coworker and one very unlucky alarm clock.',
+  }),
+  movie({
+    id: 'the-count', archiveId: 'CC_1916_09_04_TheCount', title: 'The Count',
+    category: 'Silent Era', genres: ['Comedy', 'Silent', 'Short'], year: 1916, rating: 'All',
+    description: 'A fired tailor’s apprentice crashes a high-society party disguised as nobility.',
+  }),
+  movie({
+    id: 'the-rink', archiveId: 'CC_1916_12_04_TheRink', title: 'The Rink',
+    category: 'Silent Era', genres: ['Comedy', 'Silent', 'Short'], year: 1916, rating: 'All',
+    description: 'A clumsy waiter turns out to be an extraordinary roller skater, and the rink will never be the same.',
+  }),
+  movie({
+    id: 'battleship-potemkin', archiveId: 'BattleshipPotemkin', title: 'Battleship Potemkin',
+    category: 'Silent Era', genres: ['Drama', 'Silent', 'History'], year: 1925, rating: '13+',
+    description: 'Sailors mutiny over rotten rations, sparking an uprising in Odessa — a landmark of film editing.',
+  }),
+  movie({
+    id: 'the-lost-world', archiveId: 'lost_world', title: 'The Lost World',
+    category: 'Silent Era', genres: ['Adventure', 'Silent', 'Fantasy'], year: 1925, rating: 'All',
+    description: 'An expedition to a remote South American plateau discovers dinosaurs still roaming — and brings one home to London.',
+  }),
+  movie({
+    id: '20000-leagues', archiveId: '20000LeaguesUndertheSea', title: '20,000 Leagues Under the Sea',
+    category: 'Silent Era', genres: ['Adventure', 'Silent', 'Sci-Fi'], year: 1916, rating: 'All',
+    description: 'The mysterious Captain Nemo and his submarine Nautilus, filmed with pioneering underwater photography.',
+  }),
 
-  // Documentaries & Reality
-  createMovie('m63', 'Our Planet', 'Documentaries & Reality', 96, 2019, '7+', 1),
-  createMovie('m64', 'The Last Dance', 'Documentaries & Reality', 97, 2020, '13+', 1),
-  createMovie('m65', 'Fyre', 'Documentaries & Reality', 93, 2019, '16+'),
-  createMovie('m66', 'Tiger King', 'Documentaries & Reality', 90, 2020, '18+', 2),
-  createMovie('m67', 'The Social Dilemma', 'Documentaries & Reality', 91, 2020, '13+'),
-  createMovie('m68', 'The Great British Baking Show', 'Documentaries & Reality', 89, 2010, '7+', 12),
-  createMovie('m69', 'Cheer', 'Documentaries & Reality', 92, 2020, '16+', 2),
-  createMovie('m70', 'Love is Blind', 'Documentaries & Reality', 86, 2020, '16+', 5),
-  createMovie('m71', 'The Circle', 'Documentaries & Reality', 85, 2020, '13+', 5),
+  // ---------- Adventure & Westerns ----------
+  movie({
+    id: 'mclintock', archiveId: 'mclintok_widescreen', title: 'McLintock!',
+    category: 'Adventure & Westerns', genres: ['Western', 'Comedy'], year: 1963, rating: '7+',
+    description: 'A cattle baron juggles land disputes, a rebellious daughter and the sudden return of his estranged wife.',
+  }),
+  movie({
+    id: 'angel-and-the-badman', archiveId: 'angel_and_the_badman', title: 'Angel and the Badman',
+    category: 'Adventure & Westerns', genres: ['Western', 'Romance'], year: 1947, rating: '7+',
+    description: 'A wounded gunslinger is nursed back to health by a Quaker family, and starts to question the life he left behind.',
+  }),
+  movie({
+    id: 'the-most-dangerous-game', archiveId: 'TheMostDangerousGame', title: 'The Most Dangerous Game',
+    category: 'Adventure & Westerns', genres: ['Adventure', 'Thriller'], year: 1932, rating: '13+',
+    description: 'Shipwrecked on a remote island, a big-game hunter discovers his host hunts a far more dangerous kind of prey.',
+  }),
+  movie({
+    id: 'captain-kidd', archiveId: 'CaptainKidd_', title: 'Captain Kidd',
+    category: 'Adventure & Westerns', genres: ['Adventure', 'Pirates'], year: 1945, rating: '7+',
+    description: 'The notorious pirate talks his way into royal favour, planning to escort a treasure ship and steal it for himself.',
+  }),
+  movie({
+    id: 'jungle-book', archiveId: 'JungleBook', title: 'Jungle Book',
+    category: 'Adventure & Westerns', genres: ['Adventure', 'Fantasy', 'Family'], year: 1942, rating: 'All',
+    description: 'A boy raised by wolves returns to his village and is caught between the jungle and the greed of men.',
+  }),
+  movie({
+    id: 'gullivers-travels', archiveId: 'gullivers_travels1939', title: "Gulliver's Travels",
+    category: 'Adventure & Westerns', genres: ['Animation', 'Family', 'Musical'], year: 1939, rating: 'All',
+    description: 'A shipwrecked sailor wakes up as a giant among the tiny, squabbling people of Lilliput in this hand-drawn animated feature.',
+  }),
 
-  // Epic Fantasy & Adventure
-  createMovie('m72', 'House of the Dragon', 'Epic Fantasy & Adventure', 93, 2022, '18+', 2),
-  createMovie('m73', 'The Witcher', 'Epic Fantasy & Adventure', 91, 2019, '18+', 3),
-  createMovie('m74', 'The Last Kingdom', 'Epic Fantasy & Adventure', 92, 2015, '18+', 5),
-  createMovie('m75', 'Vikings', 'Epic Fantasy & Adventure', 93, 2013, '18+', 6),
-  createMovie('m76', 'Sandman', 'Epic Fantasy & Adventure', 90, 2022, '16+', 1),
-  createMovie('m77', 'Shadow and Bone', 'Epic Fantasy & Adventure', 89, 2021, '16+', 2),
+  // ---------- Retro Sci-Fi ----------
+  movie({
+    id: 'killers-from-space', archiveId: 'Killers_from_space', title: 'Killers from Space',
+    category: 'Retro Sci-Fi', genres: ['Sci-Fi'], year: 1954, rating: '7+',
+    description: 'A nuclear scientist survives a plane crash with no memory of what happened — except for bug-eyed aliens planning an invasion.',
+  }),
+  movie({
+    id: 'teenagers-from-outer-space', archiveId: 'teenagers_from_outerspace', title: 'Teenagers from Outer Space',
+    category: 'Retro Sci-Fi', genres: ['Sci-Fi', 'Horror'], year: 1959, rating: '7+',
+    description: 'Young aliens land on Earth to breed giant monsters as livestock, but one of them has second thoughts.',
+  }),
+  movie({
+    id: 'voyage-prehistoric-women', archiveId: 'VoyagetothePlanetofPrehistoricWomen', title: 'Voyage to the Planet of Prehistoric Women',
+    category: 'Retro Sci-Fi', genres: ['Sci-Fi', 'Adventure'], year: 1968, rating: '7+',
+    description: 'Astronauts stranded on Venus face dinosaurs, a robot companion and a tribe of islanders who worship a pterodactyl god.',
+  }),
+  movie({
+    id: 'planet-outlaws', archiveId: 'planet_outlaws_ipod', title: 'Planet Outlaws',
+    category: 'Retro Sci-Fi', genres: ['Sci-Fi', 'Serial'], year: 1953, rating: 'All',
+    description: 'A 20th-century pilot wakes five centuries in the future and joins the fight against a ruthless space tyrant.',
+  }),
 
-  // Medieval & Political Dramas
-  createMovie('m78', 'Game of Thrones', 'Medieval & Political Dramas', 97, 2011, '18+', 8),
-  createMovie('m79', 'House of the Dragon', 'Medieval & Political Dramas', 93, 2022, '18+', 2),
-  createMovie('m80', 'The Crown', 'Medieval & Political Dramas', 94, 2016, '16+', 6),
-  createMovie('m81', 'Vikings: Valhalla', 'Medieval & Political Dramas', 90, 2022, '18+', 2),
-  createMovie('m82', 'Peaky Blinders', 'Medieval & Political Dramas', 95, 2013, '18+', 6),
-  createMovie('m83', 'The Last Kingdom', 'Medieval & Political Dramas', 92, 2015, '18+', 5),
-
-  // Fantasy & Sci-Fi Series
-  createMovie('m84', 'Stranger Things', 'Fantasy & Sci-Fi Series', 96, 2016, '16+', 4),
-  createMovie('m85', 'Dark', 'Fantasy & Sci-Fi Series', 97, 2017, '16+', 3),
-  createMovie('m86', 'The Umbrella Academy', 'Fantasy & Sci-Fi Series', 91, 2019, '16+', 3),
-  createMovie('m87', 'Altered Carbon', 'Fantasy & Sci-Fi Series', 91, 2018, '18+', 2),
-  createMovie('m88', 'Arcane', 'Fantasy & Sci-Fi Series', 97, 2021, '16+', 2),
-  createMovie('m89', 'Shadow and Bone', 'Fantasy & Sci-Fi Series', 89, 2021, '16+', 2),
-  createMovie('m90', 'The OA', 'Fantasy & Sci-Fi Series', 90, 2016, '16+', 2),
+  // ---------- Classic TV Series ----------
+  series({
+    id: 'beverly-hillbillies', title: 'The Beverly Hillbillies', category: 'Classic TV',
+    genres: ['Sitcom', 'Comedy'], year: 1962,
+    description: 'A backwoods family strikes oil and moves into a Beverly Hills mansion, baffling their neighbours and their banker.',
+    episodes: [
+      ['Beverly_Hillbillies_Ep01_The_Clampetts_Strike_Oil', 'The Clampetts Strike Oil'],
+      ['Beverly_Hillbillies_Ep02_Getting_Settled', 'Getting Settled'],
+      ['Beverly_Hillbillies_Ep06_Trick_Or_Treat', 'Trick or Treat'],
+      ['Beverly_Hillbillies_Ep07_The_Servants', 'The Servants'],
+      ['Beverly_Hillbillies_Ep13_Home_For_Christmas', 'Home for Christmas'],
+    ],
+  }),
+  series({
+    id: 'sherlock-holmes-1954', title: 'Sherlock Holmes (1954)', category: 'Classic TV',
+    genres: ['Mystery', 'Crime'], year: 1954, rating: '7+',
+    description: 'The great detective and Dr. Watson take on new cases in this half-hour series shot in France.',
+    episodes: [
+      ['SherlockHolmes-TheCaseoftheShyBallerina', 'The Case of the Shy Ballerina'],
+      ['SherlockHolmes-TheCaseofLadyBeryl', 'The Case of Lady Beryl'],
+      ['SherlockHolmes-TheCaseoftheCunninghamHeritage', 'The Case of the Cunningham Heritage'],
+    ],
+  }),
+  series({
+    id: 'tales-of-tomorrow', title: 'Tales of Tomorrow', category: 'Classic TV',
+    genres: ['Sci-Fi', 'Anthology'], year: 1951, rating: '7+',
+    description: 'Live television science fiction: each episode is a standalone story of strange discoveries and futures gone wrong.',
+    episodes: [
+      ['TalesOfTomorrow-IceFromSpace', 'Ice from Space'],
+      ['Tales_Of_Tomorrow_-_Ahead_Of_His_Time', 'Ahead of His Time'],
+    ],
+  }),
+  series({
+    id: 'bonanza', title: 'Bonanza', category: 'Classic TV',
+    genres: ['Western', 'Drama'], year: 1959,
+    description: 'A widowed rancher and his three very different sons defend their sprawling Nevada spread.',
+    episodes: [
+      ['Bonanza-DeathOnSunMountain', 'Death on Sun Mountain'],
+      ['Bonanza_pd', 'Public domain episode collection'],
+    ],
+  }),
+  series({
+    id: 'the-lone-ranger', title: 'The Lone Ranger', category: 'Classic TV',
+    genres: ['Western', 'Action'], year: 1949,
+    description: 'A masked former Texas Ranger and his companion ride the frontier bringing outlaws to justice.',
+    episodes: [
+      ['enter_the_lone_ranger', 'Enter the Lone Ranger'],
+      ['theloneranger_201705', 'Episode collection'],
+    ],
+  }),
+  series({
+    id: 'dragnet', title: 'Dragnet', category: 'Classic TV',
+    genres: ['Crime', 'Police'], year: 1951, rating: '7+',
+    description: 'Just the facts: a Los Angeles police sergeant works cases step by methodical step.',
+    episodes: [
+      ['Dragnet_A_Gun_For_Christmas', 'A Gun for Christmas'],
+      ['DragnetEpisode18TheBigSeventeenwcommercials', 'The Big Seventeen'],
+    ],
+  }),
 ];
 
-export const categories: Category[] = [
-  { id: 'cat1', name: 'Trending Now', movies: moviesData.filter(m => m.category === 'Trending Now') },
-  { id: 'cat2', name: 'Netflex Originals', movies: moviesData.filter(m => m.category === 'Netflex Originals') },
-  { id: 'cat3', name: 'Critically Acclaimed Dramas', movies: moviesData.filter(m => m.category === 'Critically Acclaimed Dramas') },
-  { id: 'cat4', name: 'Thrilling Series & Movies', movies: moviesData.filter(m => m.category === 'Thrilling Series & Movies') },
-  { id: 'cat5', name: 'Award-Winning Content', movies: moviesData.filter(m => m.category === 'Award-Winning Content') },
-  { id: 'cat6', name: 'Documentaries & Reality', movies: moviesData.filter(m => m.category === 'Documentaries & Reality') },
-  { id: 'cat7', name: 'Epic Fantasy & Adventure', movies: moviesData.filter(m => m.category === 'Epic Fantasy & Adventure') },
-  { id: 'cat8', name: 'Medieval & Political Dramas', movies: moviesData.filter(m => m.category === 'Medieval & Political Dramas') },
-  { id: 'cat9', name: 'Fantasy & Sci-Fi Series', movies: moviesData.filter(m => m.category === 'Fantasy & Sci-Fi Series') },
+const CATEGORY_ORDER = [
+  'Open Movies',
+  'Classic Horror',
+  'Classic TV',
+  'Film Noir & Crime',
+  'Comedy Classics',
+  'Silent Era',
+  'Adventure & Westerns',
+  'Retro Sci-Fi',
 ];
+
+const slug = (name: string) => name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+export const categories: Category[] = CATEGORY_ORDER.map((name) => ({
+  id: slug(name),
+  name,
+  movies: moviesData.filter((m) => m.category === name),
+}));
+
+const FEATURED: Array<{ id: string; tagline: string }> = [
+  { id: 'sintel', tagline: 'Free to watch, forever' },
+  { id: 'tears-of-steel', tagline: 'An open movie from Blender' },
+];
+
+export const featured: FeaturedTitle[] = FEATURED.map(({ id, tagline }) => {
+  const title = moviesData.find((m) => m.id === id);
+  if (!title) throw new Error(`Featured title "${id}" is not in the catalogue`);
+  return { ...title, tagline };
+});
 
 export default moviesData;

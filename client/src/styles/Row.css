@@ -1,27 +1,99 @@
-/* ===== Rows ===== */
 .row {
-  margin-bottom: 2.6vw;
-  padding-left: 4%;
+  margin-bottom: 36px;
 }
 
 .row__title {
-  font-size: 1.3vw;
-  min-font-size: 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0 var(--gutter);
+  margin-bottom: 12px;
+  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
   font-weight: 700;
-  margin-bottom: 0.6vw;
-  font-size: clamp(16px, 1.3vw, 22px);
+}
+
+.row__count {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-mute);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.row:hover .row__count {
+  opacity: 1;
+}
+
+.row__viewport {
+  position: relative;
 }
 
 .row__track {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   overflow-x: auto;
   overflow-y: visible;
-  padding: 20px 4% 20px 0;
-  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
   scrollbar-width: none;
+  /* Vertical padding leaves room for cards that grow on hover */
+  padding: 12px var(--gutter) 150px;
+  margin-bottom: -138px;
 }
 
 .row__track::-webkit-scrollbar {
   display: none;
+}
+
+.row__track > .card {
+  flex: 0 0 clamp(200px, 19vw, 300px);
+  scroll-snap-align: start;
+}
+
+.row__arrow {
+  position: absolute;
+  top: 12px;
+  z-index: 5;
+  width: calc(var(--gutter) - 6px);
+  min-width: 36px;
+  aspect-ratio: auto;
+  height: calc(clamp(200px, 19vw, 300px) * 9 / 16);
+  display: grid;
+  place-items: center;
+  background: rgba(20, 20, 20, 0.6);
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.row__viewport:hover .row__arrow,
+.row__arrow:focus-visible {
+  opacity: 1;
+}
+
+.row__arrow:hover {
+  background: rgba(20, 20, 20, 0.85);
+}
+
+.row__arrow svg {
+  width: 32px;
+  height: 32px;
+}
+
+.row__arrow--left {
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.row__arrow--left svg {
+  transform: rotate(180deg);
+}
+
+.row__arrow--right {
+  right: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+@media (hover: none) {
+  .row__arrow {
+    display: none;
+  }
 }

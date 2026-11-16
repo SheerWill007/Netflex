@@ -1,41 +1,33 @@
-'use client';
-
+import Link from 'next/link';
 import '@/styles/Footer.css';
 
-const Footer = () => {
+export default function Footer() {
   return (
     <footer className="footer">
-      <p className="footer__questions">Questions? Call 000-000-0000</p>
       <div className="footer__grid">
         <div className="footer__col">
-          <a href="#">FAQ</a>
-          <a href="#">Investor Relations</a>
-          <a href="#">Privacy</a>
-          <a href="#">Speed Test</a>
+          <Link href="/">Home</Link>
+          <Link href="/series">TV Series</Link>
+          <Link href="/movies">Movies</Link>
+          <Link href="/my-list">My List</Link>
         </div>
         <div className="footer__col">
-          <a href="#">Help Center</a>
-          <a href="#">Jobs</a>
-          <a href="#">Cookie Preferences</a>
-          <a href="#">Legal Notices</a>
-        </div>
-        <div className="footer__col">
-          <a href="#">Account</a>
-          <a href="#">Ways to Watch</a>
-          <a href="#">Corporate Information</a>
-          <a href="#">Only on N-Clone</a>
-        </div>
-        <div className="footer__col">
-          <a href="#">Media Center</a>
-          <a href="#">Terms of Use</a>
-          <a href="#">Contact Us</a>
+          <a href="https://archive.org/details/feature_films" target="_blank" rel="noreferrer">
+            Internet Archive feature films
+          </a>
+          <a href="https://studio.blender.org/films/" target="_blank" rel="noreferrer">
+            Blender open movies
+          </a>
+          <a href="https://creativecommons.org/licenses/" target="_blank" rel="noreferrer">
+            About Creative Commons
+          </a>
         </div>
       </div>
       <p className="footer__note">
-        This is a practice project built for learning purposes.
+        Netflex streams only public-domain and openly licensed titles hosted by the Internet
+        Archive. Creative Commons titles are credited to their creators on each title page.
       </p>
+      <p className="footer__copy">© {new Date().getFullYear()} Netflex</p>
     </footer>
   );
-};
-
-export default Footer;
+}

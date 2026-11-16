@@ -1,15 +1,31 @@
+export type MediaType = 'movie' | 'series';
+
+export interface StreamSource {
+  provider: 'archive';
+  id: string;
+}
+
+export interface Episode {
+  id: string;
+  title: string;
+  source: StreamSource;
+}
+
 export interface Movie {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   imageUrl: string;
+  posterUrl?: string;
   category: string;
-  rating: number;
+  genres: string[];
   year?: number;
-  maturityRating?: string;
-  seasons?: number;
-  duration?: string;
-  isHD: boolean;
+  maturityRating: string;
+  type: MediaType;
+  license: string;
+  credit?: string;
+  source?: StreamSource;
+  episodes?: Episode[];
 }
 
 export interface Category {
@@ -18,15 +34,6 @@ export interface Category {
   movies: Movie[];
 }
 
-export interface HeroContent {
-  id: string;
-  title: string;
-  description: string;
-  tag: string;
-  imageUrl: string;
-  rating: number;
-  year: number;
-  maturityRating: string;
-  seasons?: number;
-  isHD: boolean;
+export interface FeaturedTitle extends Movie {
+  tagline: string;
 }

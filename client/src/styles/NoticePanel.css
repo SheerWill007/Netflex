@@ -1,0 +1,137 @@
+.notice {
+  position: relative;
+  z-index: 2;
+  margin: -110px 14px 40px;
+  padding: 24px 26px 28px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 28px;
+  background: var(--bg-panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.notice__col {
+  min-width: 0;
+}
+
+.notice__heading {
+  color: var(--red);
+  font-size: clamp(1.6rem, 2.4vw, 2.3rem);
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.notice__heading--plain {
+  color: #fff;
+  font-size: clamp(1.25rem, 1.8vw, 1.7rem);
+  margin-top: 6px;
+  margin-bottom: 24px;
+}
+
+.notice__amber,
+.notice__green,
+.notice__red {
+  font-size: clamp(1rem, 1.3vw, 1.3rem);
+  line-height: 1.6;
+}
+
+.notice__amber {
+  color: var(--amber);
+}
+
+.notice__green {
+  color: var(--green);
+}
+
+.notice__red {
+  color: var(--red);
+}
+
+.notice__red span {
+  color: var(--amber);
+}
+
+.notice__divider {
+  width: 2px;
+  background: var(--red);
+  opacity: 0.7;
+}
+
+.notice__cta-row {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.notice__cta {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2b2b2b, #3a3a3a);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.notice__cta:hover {
+  transform: translateY(-2px);
+  border-color: #fff;
+}
+
+.notice__cta svg {
+  width: 48px;
+  height: 48px;
+}
+
+.notice__cta span {
+  display: grid;
+  line-height: 1.05;
+  font-style: italic;
+}
+
+.notice__cta strong {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.notice__cta em {
+  font-size: 1rem;
+}
+
+.notice__list {
+  color: var(--green);
+  font-size: clamp(1rem, 1.3vw, 1.3rem);
+  line-height: 1.6;
+}
+
+.notice__list span {
+  color: #fcd34d;
+}
+
+@media (max-width: 960px) {
+  .notice {
+    grid-template-columns: 1fr;
+    margin-top: -70px;
+  }
+  .notice__divider {
+    width: auto;
+    height: 2px;
+  }
+}
+
+@media (max-width: 560px) {
+  .notice {
+    margin-left: 8px;
+    margin-right: 8px;
+    padding: 20px 18px;
+  }
+  .notice__cta-row {
+    flex-direction: column;
+  }
+}

@@ -1,142 +1,178 @@
-/* ===== Movie Card ===== */
 .card {
   position: relative;
-  flex: 0 0 auto;
-  width: 230px;
-  aspect-ratio: 16 / 9;
-  border-radius: 4px;
-  overflow: visible;
-  transition: transform 0.3s ease, z-index 0s;
-  cursor: pointer;
+  border-radius: 6px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transform-origin: center top;
 }
 
 .card__thumb {
-  width: 100%;
-  height: 100%;
-  border-radius: 4px;
-  display: flex;
-  align-items: flex-end;
-  padding: 10px;
   position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  background-color: #2a2a2a;
+  background-size: cover;
+  background-position: center;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  text-align: left;
 }
 
+/* Gradient so the title stays readable on any thumbnail */
 .card__thumb::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.55) 100%);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.85) 100%);
 }
 
 .card__label {
-  position: relative;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 10px;
   z-index: 1;
-  font-family: var(--font-display), "Bebas Neue", "Arial Narrow", sans-serif;
-  font-size: 15px;
-  letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
-.card__overlay {
+.card__tag {
   position: absolute;
-  top: 0;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--red);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.card__panel {
+  position: absolute;
   left: 0;
-  width: 100%;
-  background: var(--bg-raised);
-  border-radius: 4px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-  padding: 10px 12px 12px;
+  right: 0;
+  top: 100%;
+  padding: 12px 14px 14px;
+  background: #181818;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
   opacity: 0;
   visibility: hidden;
-  transform: scale(0.9);
-  transform-origin: center top;
-  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-.card:hover {
-  transform: scale(1.35) translateY(-10px);
+.card:hover,
+.card:focus-within {
   z-index: 10;
+  transform: scale(1.18);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
 }
 
-.card:hover .card__overlay {
+.card:hover .card__thumb,
+.card:focus-within .card__thumb {
+  border-radius: 6px 6px 0 0;
+}
+
+.card:hover .card__panel,
+.card:focus-within .card__panel {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto;
-  top: -6px;
 }
 
-.card__overlay-title {
-  font-size: 13px;
-  font-weight: 700;
-  margin: 8px 0 8px;
+/* First and last cards grow inward so they don't clip at the edges */
+.row__track > .card:first-child {
+  transform-origin: left top;
 }
 
-.card__overlay-actions {
+.row__track > .card:last-child {
+  transform-origin: right top;
+}
+
+.card__actions {
   display: flex;
   gap: 8px;
+  margin-bottom: 10px;
 }
 
 .mini-btn {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1.5px solid var(--text-mute);
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(42, 42, 42, 0.6);
+  display: grid;
+  place-items: center;
+  transition: border-color 0.15s ease;
+}
+
+.mini-btn:hover,
+.mini-btn--on {
+  border-color: #fff;
 }
 
 .mini-btn svg {
-  width: 14px;
-  height: 14px;
-}
-
-.mini-btn:hover {
-  border-color: var(--text);
-  background: rgba(255, 255, 255, 0.2);
+  width: 16px;
+  height: 16px;
 }
 
 .mini-btn--play {
-  background: var(--text);
+  background: #fff;
+  border-color: #fff;
   color: #000;
-  border-color: var(--text);
 }
 
-.mini-btn--play:hover {
-  background: rgba(255, 255, 255, 0.8);
+.mini-btn--play svg {
+  width: 14px;
+  height: 14px;
+  margin-left: 2px;
 }
 
-.card__overlay-meta {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-  font-size: 11px;
-  color: var(--text-dim);
+.mini-btn--end {
+  margin-left: auto;
 }
 
-.card__overlay-meta .match {
-  color: #46d369;
+.card__title {
   font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
 }
 
-.card__overlay-meta .hd {
-  border: 1px solid var(--text-mute);
+.card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.card__rating {
+  border: 1px solid rgba(255, 255, 255, 0.4);
   padding: 0 4px;
+  color: #fff;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 560px) {
-  .card {
-    width: 150px;
-  }
+.card__genres {
+  font-size: 0.75rem;
+  color: #fff;
+}
 
-  .card:hover {
-    transform: scale(1.15) translateY(-6px);
+/* In grids (My List, Search) cards scale less so neighbours stay visible */
+.grid .card:hover,
+.grid .card:focus-within {
+  transform: scale(1.06);
+}
+
+@media (hover: none) {
+  .card:hover,
+  .card:focus-within {
+    transform: none;
+  }
+  .card__panel {
+    display: none;
   }
 }
