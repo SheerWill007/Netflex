@@ -18,6 +18,7 @@ Netflex has a Next.js frontend and an Express API. Every title in the built-in c
 - [Hosting your own films](#hosting-your-own-films)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
+- [License](#license)
 
 ## Features
 
@@ -242,3 +243,9 @@ Render's free plan puts the API to sleep after about 15 minutes without traffic;
 - **API exits with "JWT_SECRET must be set":** set `JWT_SECRET`, or `NODE_ENV=development` for local use.
 - **Browser console shows a CORS error:** add the site's exact origin (scheme + host, no trailing slash) to `CLIENT_URL` on the API and redeploy.
 - **Your films don't appear:** check that `server/films.json` is committed and `BUNNY_CDN_HOSTNAME` is set on the API. The API logs a warning when films exist but the host is missing.
+
+## License
+
+The Netflex source code is licensed under the [GNU Affero General Public License v3.0](LICENSE). If you run a modified version of Netflex as a website, you must make its source code available to its users.
+
+The licence covers the code only. Films in the catalogue keep their own licences (public domain or the Creative Commons licence shown on each title), and films you upload remain yours.

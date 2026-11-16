@@ -18,7 +18,7 @@
     "typescript"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
