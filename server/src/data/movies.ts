@@ -1,4 +1,5 @@
 import { Category, Episode, FeaturedTitle, Movie, MediaType } from '../types';
+import { loadFilms, ORIGINALS_CATEGORY } from './films';
 
 /**
  * Catalogue of titles that are free to stream legally.
@@ -373,7 +374,13 @@ const moviesData: Movie[] = [
   }),
 ];
 
+// Your own films (server/films.json, hosted on Bunny Stream) come first.
+const films = loadFilms();
+const allTitles: Movie[] = [...films, ...moviesData];
+
 const CATEGORY_ORDER = [
+  ORIGINALS_CATEGORY,
+  ...films.map((f) => f.category).filter((c) => c !== ORIGINALS_CATEGORY),
   'Open Movies',
   'Classic Horror',
   'Classic TV',
@@ -386,21 +393,25 @@ const CATEGORY_ORDER = [
 
 const slug = (name: string) => name.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-export const categories: Category[] = CATEGORY_ORDER.map((name) => ({
-  id: slug(name),
-  name,
-  movies: moviesData.filter((m) => m.category === name),
-}));
+export const categories: Category[] = Array.from(new Set(CATEGORY_ORDER))
+  .map((name) => ({
+    id: slug(name),
+    name,
+    movies: allTitles.filter((m) => m.category === name),
+  }))
+  .filter((cat) => cat.movies.length > 0);
 
 const FEATURED: Array<{ id: string; tagline: string }> = [
+  // Your newest films lead the hero banner
+  ...films.slice(0, 3).map((f) => ({ id: f.id, tagline: 'A Netflex Original' })),
   { id: 'sintel', tagline: 'Free to watch, forever' },
   { id: 'tears-of-steel', tagline: 'An open movie from Blender' },
 ];
 
 export const featured: FeaturedTitle[] = FEATURED.map(({ id, tagline }) => {
-  const title = moviesData.find((m) => m.id === id);
+  const title = allTitles.find((m) => m.id === id);
   if (!title) throw new Error(`Featured title "${id}" is not in the catalogue`);
   return { ...title, tagline };
 });
 
-export default moviesData;
+export default allTitles;

@@ -1,4 +1,4 @@
-import type { Category, FeaturedTitle, MediaType, Movie, StreamSource } from '@/types';
+import type { ArchiveSource, Category, FeaturedTitle, MediaType, Movie, StreamSource } from '@/types';
 
 /**
  * Server components call the Express API directly. In the browser, requests go to
@@ -10,7 +10,8 @@ const API_URL =
     : '/api';
 
 async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 300 } });
+  // Short cache: the catalogue rarely changes, but newly uploaded films should appear quickly.
+  const res = await fetch(`${API_URL}${path}`, { next: { revalidate: 60 } });
   if (!res.ok) {
     throw new Error(`API ${path} failed with ${res.status}`);
   }
@@ -28,8 +29,9 @@ export const fetchMoviesByIds = (ids: string[]) =>
 export const searchMovies = (query: string) =>
   get<Movie[]>(`/movies/search?q=${encodeURIComponent(query)}`);
 
-export const embedUrl = (source: StreamSource) =>
+export const embedUrl = (source: ArchiveSource) =>
   `https://archive.org/embed/${encodeURIComponent(source.id)}?autoplay=1`;
 
+/** Public page for a title's source, or null for self-hosted films */
 export const sourcePageUrl = (source: StreamSource) =>
-  `https://archive.org/details/${encodeURIComponent(source.id)}`;
+  source.provider === 'archive' ? `https://archive.org/details/${encodeURIComponent(source.id)}` : null;

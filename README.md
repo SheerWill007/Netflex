@@ -16,6 +16,7 @@ Netflex is a full-stack streaming-catalogue demo. The repository contains a Next
 - [Running and building](#running-and-building)
 - [HTTP API](#http-api)
 - [Data and persistence](#data-and-persistence)
+- [Hosting your own films](#hosting-your-own-films)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 
@@ -272,6 +273,60 @@ Add a movie by sending `POST /api/watchlist` with JSON `{ "movieId": "m1" }`. Th
 - Sample title images are generated using `https://picsum.photos/` seed URLs.
 - API account records are written to `data/db.json` relative to the running server module. The file and its parent directory are created on first write; keep this file persistent if account data must survive restarts or deployments.
 - The JSON store is intended for a local/demo workload, not concurrent or horizontally scaled production use. Use a managed database for production.
+
+## Hosting your own films
+
+Your own films are stored and streamed by [Bunny Stream](https://bunny.net/stream/), which converts each upload into adaptive HLS (several qualities, chosen automatically for the viewer's connection). They appear in a **Netflex Originals** row at the top of the home page, and the newest three lead the hero banner.
+
+Only upload films you own or have the rights to distribute.
+
+### One-time setup
+
+1. Create a Bunny account, then **Stream → Add Video Library**.
+2. In the library's **API** page, copy the **Video Library ID**, the **API Key** and the **CDN Hostname** (for example `vz-abc123.b-cdn.net`).
+3. Add them to `server/.env`:
+
+   ```env
+   BUNNY_LIBRARY_ID=123456
+   BUNNY_API_KEY=your-library-api-key
+   BUNNY_CDN_HOSTNAME=vz-abc123.b-cdn.net
+   ```
+
+   The API key can upload and delete videos. Keep it out of git and never put it in the client.
+
+4. Recommended: in the library's **Security** settings, add your site's domain to **Allowed Referrers** so other sites can't embed your streams.
+
+### Uploading films
+
+```bash
+cd server
+npm run upload-films -- "D:\My Films" --dry-run   # list what would be uploaded
+npm run upload-films -- "D:\My Films"             # upload new .mp4/.mov/.mkv/.m4v/.webm/.avi files
+npm run upload-films -- --status                  # encoding progress for each film
+```
+
+- A film's title (and year, if the file name ends in one, e.g. `Night Shift (2024).mp4`) comes from its file name.
+- Each upload is saved to `server/films.json` as soon as it finishes, so re-running after an interruption only uploads what's missing. A failed upload is removed from Bunny automatically.
+- Bunny takes a few minutes to encode each film. Until then the player shows "may still be encoding".
+
+### Editing film details
+
+Edit `server/films.json` and restart the API. Each entry supports:
+
+| Field | Meaning |
+| --- | --- |
+| `title`, `description`, `year`, `genres` | Shown on cards, the hero banner and the details view |
+| `maturityRating` | e.g. `All`, `7+`, `13+`, `16+`, `18+` |
+| `category` | Row to show the film in (default `Netflex Originals`) |
+| `credit`, `license` | Shown in the details view (default licence `All rights reserved`) |
+| `hidden` | `true` hides the film without deleting it |
+| `bunnyVideoId`, `fileName` | Set by the upload script; don't change |
+
+Artwork comes from Bunny's auto-generated thumbnail. To change it, pick a new thumbnail for the video in the Bunny dashboard.
+
+### Playback
+
+Self-hosted films play in Netflex's own player: native HLS in Safari and recent Chrome builds, hls.js elsewhere. It offers a quality picker when the stream has several renditions, and it remembers where each viewer stopped (stored in their browser), with a **Start over** option.
 
 ## Deployment
 

@@ -13,6 +13,7 @@ export default function DetailsModal({ movie, onClose }: { movie: Movie; onClose
   const saved = isInList(movie.id);
   const art = movie.posterUrl ?? movie.imageUrl;
   const firstSource = movie.source ?? movie.episodes?.[0]?.source;
+  const sourceLink = firstSource ? sourcePageUrl(firstSource) : null;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -86,11 +87,11 @@ export default function DetailsModal({ movie, onClose }: { movie: Movie; onClose
                 <dd>{movie.credit}</dd>
               </div>
             )}
-            {firstSource && (
+            {sourceLink && (
               <div>
                 <dt>Source:</dt>
                 <dd>
-                  <a href={sourcePageUrl(firstSource)} target="_blank" rel="noreferrer">
+                  <a href={sourceLink} target="_blank" rel="noreferrer">
                     View source on Internet Archive ↗
                   </a>
                 </dd>
