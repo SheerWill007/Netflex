@@ -51,10 +51,9 @@ A **production-ready streaming platform** featuring:
 
 ```
 netflex/
-├── public/          # Static assets (ADD YOUR LOGO HERE!)
-│   └── netflex.png  # ← Your favicon goes here
-│
 ├── client/          # Next.js 14 Frontend
+│   ├── public/      # Static assets (ADD YOUR LOGO HERE!)
+│   │   └── netflex.png  # ← Your favicon goes here
 │   ├── src/
 │   │   ├── app/     # Next.js App Router
 │   │   ├── components/   # React components
@@ -110,10 +109,10 @@ netflex/
 
 1. **Create or download** a logo (64x64px PNG)
 2. **Name it**: `netflex.png`
-3. **Place in**: `/public/` folder
+3. **Place in**: `client/public/` folder
 4. **Refresh** browser
 
-**Guide**: `/public/HOW-TO-ADD-LOGO.md`
+**Guide**: `client/public/HOW-TO-ADD-LOGO.md`
 
 ### 2. Set Up Clerk Authentication
 
@@ -255,7 +254,7 @@ npm run dev
 1. ✅ Run `npm run install:all`
 2. ✅ Run `npm run dev`
 3. ✅ Open http://localhost:3000
-4. ✅ Add your logo to `/public/netflex.png`
+4. ✅ Add your logo to `client/public/netflex.png`
 
 ### Today
 1. Read `QUICK-START-NEXTJS.md`
@@ -346,7 +345,7 @@ npm run dev
 - **Full Docs**: `README.md`
 
 ### Common Questions
-- **Logo?** → `/public/HOW-TO-ADD-LOGO.md`
+- **Logo?** → `client/public/HOW-TO-ADD-LOGO.md`
 - **Setup?** → `SETUP.md`
 - **Features?** → `NEXTJS-MIGRATION.md`
 - **Structure?** → `PROJECT-STRUCTURE.md`

@@ -51,7 +51,7 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 
 1. Create or download logo (64x64px PNG)
 2. Save as `netflex.png`
-3. Place in `/public/` folder
+3. Place in `client/public/` folder
 
 ### Step 5: Start Development
 
@@ -80,7 +80,7 @@ Or double-click: `start-dev.bat`
 - [ ] Dependencies installed (no errors)
 - [ ] `server/.env` configured
 - [ ] `client/.env.local` configured with **Clerk keys**
-- [ ] Logo added to `/public/netflex.png`
+- [ ] Logo added to `client/public/netflex.png`
 - [ ] Backend runs: http://localhost:5000
 - [ ] Frontend runs: http://localhost:3000
 - [ ] Sign Up button visible
