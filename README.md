@@ -1,290 +1,190 @@
 # Netflex
 
-Netflex is a full-stack streaming-catalogue demo. The repository contains a Next.js 14 frontend and a TypeScript/Express API. The frontend currently presents a public marketing/landing page with Clerk sign-in and sign-up buttons. The API separately provides a sample movie catalogue, local email/password authentication, and a per-user watchlist.
+A free streaming site for public-domain classics, openly licensed films and your own work.
 
-> This is a learning/demo application, not a production streaming service. The catalogue is hard-coded sample data, movie artwork uses Picsum placeholder images, and there is no video playback or subscription/billing integration.
+**Live:** [netflex-drab.vercel.app](https://netflex-drab.vercel.app) · **API:** [netflex-api-uk1m.onrender.com/api/health](https://netflex-api-uk1m.onrender.com/api/health)
+
+Netflex has a Next.js frontend and an Express API. Every title in the built-in catalogue is in the public domain or under a Creative Commons licence and streams from the Internet Archive. Your own films can be uploaded to Bunny Stream and play in Netflex's HLS player.
 
 ## Contents
 
 - [Features](#features)
-- [Technology](#technology)
 - [Architecture](#architecture)
-- [Project structure](#project-structure)
-- [Prerequisites](#prerequisites)
 - [Getting started](#getting-started)
 - [Environment variables](#environment-variables)
-- [Running and building](#running-and-building)
+- [Scripts](#scripts)
 - [HTTP API](#http-api)
-- [Data and persistence](#data-and-persistence)
+- [The catalogue](#the-catalogue)
 - [Hosting your own films](#hosting-your-own-films)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
+- [License](#license)
 
 ## Features
 
-- Responsive landing page with trending title cards, product feature sections, FAQs, and Clerk modal actions.
-- Next.js App Router application with TypeScript, React 18, and custom CSS.
-- Express API with health check, request logging, CORS configuration, and centralized error handling.
-- Static sample catalogue containing 90 movie/series records in nine categories, plus a separate featured title.
-- Catalogue API for the hero content, categories, title details, and title-name search.
-- API registration and login using bcrypt-hashed passwords and seven-day JWTs.
-- Authenticated API endpoints for reading, adding, and removing movies from a user's watchlist.
-- JSON-file user storage for local development and simple demonstrations.
-
-## Technology
-
-| Area | Technologies |
-| --- | --- |
-| Web app | Next.js 14, React 18, TypeScript, Clerk, Axios, CSS |
-| API | Node.js, Express 4, TypeScript, CORS, dotenv |
-| API authentication | bcryptjs, jsonwebtoken |
-| Development | npm, concurrently, nodemon |
+- **Browse:** pill navigation (Home, TV Series, Movies, My List), a rotating hero banner, an announcement panel and horizontally scrolling title rows.
+- **Watch:** a details view with licence, credit and episode list, and a full-screen player. Internet Archive titles use the archive player; your own films use an adaptive HLS player with a quality picker and resume-where-you-left-off.
+- **Search:** titles, genres, categories and descriptions.
+- **My List:** saved in the viewer's browser, so no account is needed to watch.
+- **Your films:** an upload script sends a folder of videos to Bunny Stream and adds them to a **Netflex Originals** row.
+- **Optional sign-in:** Clerk is enabled only when a publishable key is configured.
+- **Responsive:** works from phone to desktop.
 
 ## Architecture
 
 ```text
 Browser
-  |
-  +--> Next.js app (client/, port 3000)
-  |      App Router page and layout
-  |      Clerk provides the landing-page sign-in/sign-up UI
-  |      API helper uses NEXT_PUBLIC_API_URL
-  |
-  +--> Express API (server/, port 5000)
-         /api/movies     Static in-memory catalogue
-         /api/auth       Local email/password accounts and JWTs
-         /api/watchlist  JWT-protected account watchlists
-         server data     JSON file containing API users
+  │
+  ▼
+Next.js app (client/) ── Vercel
+  │  Server components fetch the catalogue from the API.
+  │  Browser requests to /api/* are proxied to the API by a Next.js rewrite.
+  ▼
+Express API (server/) ── Render
+     /api/movies     Catalogue: built-in titles + your films (server/films.json)
+     /api/auth       Optional email/password accounts (JWT)
+     /api/watchlist  Account watchlists (JWT)
+
+Video
+  Internet Archive embeds  ← built-in catalogue
+  Bunny Stream (HLS)       ← your films
 ```
 
-The root npm scripts start the web app and API as separate development processes. The frontend API helper sends requests to the URL in `NEXT_PUBLIC_API_URL`; the Next.js configuration also rewrites `/api/*` to that API origin.
-
-There are two distinct authentication integrations in the current code:
-
-1. The Next.js landing page and route middleware use Clerk. The root page, Clerk sign-in/sign-up routes, and `/api/*` paths are public; other matched frontend routes require Clerk authentication.
-2. The Express API has its own registration/login endpoints and validates its own JWT bearer tokens for `/api/watchlist/*` and `/api/auth/me`.
-
-The Clerk session is not exchanged for an API JWT, and the frontend does not currently call the API's account or watchlist endpoints. Treat these as separate systems when extending the app.
-
-## Project structure
+The API allows cross-origin requests only from the origins listed in `CLIENT_URL`.
 
 ```text
 .
-├── client/                         Next.js frontend
-│   ├── .env.example                Frontend environment template
-│   ├── .eslintrc.json
-│   ├── package-lock.json
-│   ├── package.json                Frontend scripts and dependencies
-│   ├── next.config.js              Next.js configuration and API rewrite
-│   ├── tsconfig.json
+├── client/                 Next.js 14 frontend (App Router, TypeScript)
+│   ├── public/             Icon (replace netflex.png to change it), manifest, robots.txt
 │   └── src/
-│       ├── app/
-│       │   ├── layout.tsx          Root layout, metadata, Clerk provider
-│       │   └── page.tsx            Public landing page
-│       ├── components/
-│       │   ├── Footer.tsx
-│       │   ├── Hero.tsx
-│       │   ├── MovieCard.tsx
-│       │   ├── Navbar.tsx
-│       │   └── Row.tsx
-│       ├── lib/api.ts              Axios API client and catalogue functions
-│       ├── middleware.ts           Clerk route protection
-│   ├── public/                     Static files served by Next.js at /
-│   │   ├── HOW-TO-ADD-LOGO.md
-│   │   ├── netflex.png             App icon
-│   │   ├── manifest.json           Web app manifest
-│   │   ├── README.md
-│   │   └── robots.txt              Crawler rules
-│       ├── styles/
-│       │   ├── App.css
-│       │   ├── Footer.css
-│       │   ├── Hero.css
-│       │   ├── Landing.css
-│       │   ├── MovieCard.css
-│       │   ├── Navbar.css
-│       │   ├── Row.css
-│       │   └── globals.css
-│       └── types/index.ts          Frontend catalogue types
-├── server/                         Express backend
-│   ├── .env.example                API environment template
-│   ├── nodemon.json
-│   ├── package-lock.json
-│   ├── package.json                API scripts and dependencies
-│   ├── src/
-│   │   ├── config/constants.ts     API prefix and server configuration
-│   │   ├── controllers/
-│   │   │   └── movieController.ts  Catalogue request handlers
-│   │   ├── data/movies.ts          Featured title and sample catalogue
-│   │   ├── lib/movies.ts           Movie lookup helpers
-│   │   ├── middleware/auth.ts      JWT creation and verification
-│   │   ├── routes/
-│   │   │   ├── auth.ts             Registration, login, and profile
-│   │   │   ├── movies.ts           Public catalogue routes
-│   │   │   └── watchlist.ts        Protected watchlist routes
-│   │   ├── store/db.ts             JSON-file user store
-│   │   ├── types/index.ts          API and persisted-user types
-│   │   ├── utils/
-│   │   │   ├── errorHandler.ts
-│   │   │   └── logger.ts
-│   │   └── index.ts                Express app, middleware, and startup
-│   └── tsconfig.json
-├── .gitignore
-├── CLERK-QUICKSTART.md
-├── CLERK-SETUP.md
-├── CONTRIBUTING.md
-├── INSTALLATION.md
-├── LICENSE
-├── QUICKSTART.md
-├── SETUP.md
-├── START-HERE.md
-├── install.bat                     Windows dependency installation helper
-├── start-client.bat                Windows frontend launcher
-├── start-dev.bat                   Windows full-stack launcher
-├── start-server.bat                Windows API launcher
-├── package.json                    Root orchestration scripts
-├── package-lock.json
-├── netflex.png                     Repository-level logo image
-└── README.md
+│       ├── app/            Pages: /, /movies, /series, /search, /my-list
+│       ├── components/     Navbar, Hero, Row, MovieCard, DetailsModal, Player, HlsVideo, …
+│       ├── lib/            API client, optional-auth flag
+│       ├── styles/         CSS per component
+│       └── middleware.ts   Clerk (only when configured)
+├── server/                 Express 4 API (TypeScript)
+│   ├── films.json          Your uploaded films (created by the upload script)
+│   └── src/
+│       ├── data/           Built-in catalogue (movies.ts) and your films loader (films.ts)
+│       ├── scripts/        uploadFilms.ts (Bunny Stream uploader)
+│       ├── routes/         movies, auth, watchlist
+│       └── index.ts        App setup, CORS, error handling
+└── package.json            Scripts that run both apps
 ```
-
-The client and server each have their own TypeScript configuration and npm lockfile. `client/src/app/page.tsx` renders the landing page; the catalogue components and API helpers are available for building out a catalogue experience.
-
-## Prerequisites
-
-- Node.js and npm installed and available on `PATH`.
-- A Clerk application and its development keys if you want to use the sign-in/sign-up controls. See [Clerk's dashboard](https://dashboard.clerk.com/).
-
-The frontend runs at `http://localhost:3000` and the API at `http://localhost:5000` by default.
 
 ## Getting started
 
-From the repository root, install the root and application dependencies, then start both services:
+Requires Node.js 20 or newer.
 
-```powershell
+```bash
 npm install
-npm run install:all
-npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The API root is available at [http://localhost:5000](http://localhost:5000), and its health endpoint is [http://localhost:5000/api/health](http://localhost:5000/api/health).
+```bash
+npm run install:all
+```
 
-Copy the environment templates and configure the required values before using authentication:
+Copy the environment templates (PowerShell shown; use `cp` on macOS/Linux):
 
 ```powershell
 Copy-Item client/.env.example client/.env.local
 Copy-Item server/.env.example server/.env
 ```
 
-Set the Clerk keys in `client/.env.local` and replace the development JWT secret in `server/.env` if using the API auth endpoints. Environment files are excluded from Git; do not commit real secrets.
+In `server/.env`, keep `NODE_ENV=development` for local work, or set `JWT_SECRET`. The API refuses to start without a secret in any other mode.
 
-For a Windows-only setup, `install.bat` and the `start-*.bat` helpers are also provided. The npm commands above work cross-platform.
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). The API runs on [http://localhost:5000](http://localhost:5000).
+
+Leave the Clerk keys in `client/.env.local` empty unless you have a working Clerk application; the site runs without them.
 
 ## Environment variables
 
-### Frontend (`client/.env.local`)
+### Frontend (`client/.env.local`, or Vercel project settings)
 
-| Variable | Purpose | Default / example |
+| Variable | Purpose | Example |
 | --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | Base URL of the Express API, including `/api` | `http://localhost:5000/api` |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk browser-side application key | Required for Clerk |
-| `CLERK_SECRET_KEY` | Clerk server-side secret | Required for Clerk |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Sign-in route | `/sign-in` |
-| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | Sign-up route | `/sign-up` |
-| `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` | Redirect after sign-in | `/` |
-| `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` | Redirect after sign-up | `/` |
+| `NEXT_PUBLIC_API_URL` | API base URL, including `/api` | `http://localhost:5000/api` |
+| `API_INTERNAL_URL` | Optional: API URL used by server rendering, if different | — |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Optional: enables Clerk sign-in | — |
+| `CLERK_SECRET_KEY` | Required only with the Clerk key above | — |
 
-The frontend API client falls back to `http://localhost:5000/api` when `NEXT_PUBLIC_API_URL` is unset. Set it explicitly for deployments. The Next.js rewrite appends the requested API path, so provide the API base through `/api`, not a specific endpoint.
+### Backend (`server/.env`, or Render service settings)
 
-### Backend (`server/.env`)
-
-| Variable | Purpose | Default / example |
+| Variable | Purpose | Example |
 | --- | --- | --- |
-| `PORT` | Express listening port | `5000` |
-| `NODE_ENV` | Runtime mode | `development` |
-| `CLIENT_URL` | Allowed CORS origin(s); comma-separated list supported | `http://localhost:3000` |
-| `JWT_SECRET` | Secret used to sign and verify API bearer tokens | Set a long random value |
+| `PORT` | Listening port (set automatically on Render) | `5000` |
+| `NODE_ENV` | `development`, `test` or `production` | `development` |
+| `CLIENT_URL` | Allowed CORS origins, comma-separated | `http://localhost:3000` |
+| `JWT_SECRET` | Signs account tokens. Required unless `NODE_ENV` is `development` or `test` | long random string |
+| `BUNNY_LIBRARY_ID` | Bunny Stream library (upload script) | `123456` |
+| `BUNNY_API_KEY` | Bunny Stream API key (upload script). Keep secret | — |
+| `BUNNY_CDN_HOSTNAME` | Bunny CDN host used for playback and thumbnails | `vz-abc123.b-cdn.net` |
 
-`JWT_SECRET` must be set in production. The development-only fallback must not be used for deployed accounts.
+Never commit `.env` files; they are ignored by git.
 
-## Running and building
+## Scripts
 
-Run these scripts from the repository root:
+Run from the repository root:
 
 | Command | Description |
 | --- | --- |
-| `npm run dev` | Start API and frontend concurrently |
-| `npm run server:dev` | Start only the API in watch mode |
-| `npm run client:dev` | Start only the Next.js development server |
+| `npm run dev` | Start the API and frontend together |
+| `npm run server:dev` / `npm run client:dev` | Start one of them |
 | `npm run build` | Build the API, then the frontend |
-| `npm run server:build` | Compile the API TypeScript into `server/dist/` |
-| `npm run client:build` | Build the Next.js app |
 | `npm start` | Start the compiled API |
-| `npm run server:start` | Same as `npm start` |
-| `npm run client:start` | Start the built Next.js app |
+| `npm run client:start` | Start the built frontend |
 
-The individual workspaces also provide `lint` scripts: run `npm run lint --prefix server` or `npm run lint --prefix client`.
+In `server/`: `npm run upload-films -- "<folder>"` uploads your films (see below). In `client/`: `npm run lint`.
 
 ## HTTP API
 
-All API routes are prefixed with `/api`. Successful catalogue responses are JSON. Errors use JSON objects with an `error` field.
+All routes are under `/api` and return JSON. Errors look like `{ "error": "…" }`.
 
-### Health and catalogue
+### Catalogue
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `/api/health` | API status, timestamp, and environment |
-| `GET` | `/api/movies/hero` | Featured title |
-| `GET` | `/api/movies/categories` | All nine categories and their titles |
-| `GET` | `/api/movies/categories/:id` | One category by ID (for example, `cat1`) |
-| `GET` | `/api/movies` | Flattened list of catalogue titles |
-| `GET` | `/api/movies/search?q=<title>` | Case-insensitive title substring search |
-| `GET` | `/api/movies/:id` | One catalogue title by ID |
+| `GET` | `/api/health` | Status, timestamp and environment |
+| `GET` | `/api/movies/featured` | Titles for the hero banner |
+| `GET` | `/api/movies/categories?type=movie\|series` | Rows with their titles; `type` is optional |
+| `GET` | `/api/movies/categories/:id` | One row, e.g. `classic-horror` |
+| `GET` | `/api/movies?type=…&ids=a,b` | All titles, optionally filtered or by ID (keeps order) |
+| `GET` | `/api/movies/search?q=…` | Ranked search across title, genre, category and description |
+| `GET` | `/api/movies/:id` | One title |
 
-Search requires the `q` query parameter. The route is registered before `/:id` so `/search` is interpreted as a search endpoint.
+### Accounts and watchlist (optional)
 
-### Accounts and watchlist
-
-| Method | Path | Authentication | Description |
+| Method | Path | Auth | Description |
 | --- | --- | --- | --- |
-| `POST` | `/api/auth/register` | None | Create an API account |
-| `POST` | `/api/auth/login` | None | Verify credentials and issue a token |
-| `GET` | `/api/auth/me` | API JWT | Return the current API account |
-| `GET` | `/api/watchlist` | API JWT | Return the account's saved movie records |
-| `POST` | `/api/watchlist` | API JWT | Add a movie to the watchlist |
-| `DELETE` | `/api/watchlist/:movieId` | API JWT | Remove a movie from the watchlist |
+| `POST` | `/api/auth/register` | — | `{ name, email, password }` → `{ token, user }` |
+| `POST` | `/api/auth/login` | — | `{ email, password }` → `{ token, user }` |
+| `GET` | `/api/auth/me` | Bearer JWT | Current account |
+| `GET` / `POST` | `/api/watchlist` | Bearer JWT | List titles / add `{ movieId }` |
+| `DELETE` | `/api/watchlist/:movieId` | Bearer JWT | Remove a title |
 
-Register with JSON such as:
+The website itself does not need accounts: My List is stored in the browser. Accounts are kept in a JSON file (`server/data/db.json`), which does not survive redeploys on hosts with temporary disks such as Render's free plan. Use a database before relying on them.
 
-```json
-{
-  "name": "Alex",
-  "email": "alex@example.com",
-  "password": "choose-a-password"
-}
-```
+## The catalogue
 
-Login with `email` and `password`. Both endpoints return `{ "token": "...", "user": { "id": "...", "email": "...", "name": "..." } }`. For protected endpoints, send the returned JWT in the HTTP `Authorization` header using the Bearer authentication scheme. Registration requires a name, valid email, and password of at least six characters.
+`server/src/data/movies.ts` lists the built-in titles. Each one is in the public domain or under a Creative Commons licence (Blender Foundation open movies, *Sita Sings the Blues*, *Star Wreck*), as recorded on its Internet Archive item page, with credits shown where the licence requires them.
 
-Add a movie by sending `POST /api/watchlist` with JSON `{ "movieId": "m1" }`. The watchlist does not add duplicate IDs. A movie ID must exist in the sample catalogue (or identify the featured title).
-
-## Data and persistence
-
-- Catalogue records and categories are declared in `server/src/data/movies.ts`; they are loaded into memory and are not stored in a database.
-- Sample title images are generated using `https://picsum.photos/` seed URLs.
-- API account records are written to `data/db.json` relative to the running server module. The file and its parent directory are created on first write; keep this file persistent if account data must survive restarts or deployments.
-- The JSON store is intended for a local/demo workload, not concurrent or horizontally scaled production use. Use a managed database for production.
+To add a title, find it on archive.org, check the licence on the item page, and add an entry using the identifier from its URL (`archive.org/details/<identifier>`).
 
 ## Hosting your own films
 
-Your own films are stored and streamed by [Bunny Stream](https://bunny.net/stream/), which converts each upload into adaptive HLS (several qualities, chosen automatically for the viewer's connection). They appear in a **Netflex Originals** row at the top of the home page, and the newest three lead the hero banner.
+Your own films are stored and streamed by [Bunny Stream](https://bunny.net/stream/), which converts each upload into adaptive HLS. They appear in a **Netflex Originals** row at the top of the home page, and the newest three lead the hero banner.
 
 Only upload films you own or have the rights to distribute.
 
 ### One-time setup
 
 1. Create a Bunny account, then **Stream → Add Video Library**.
-2. In the library's **API** page, copy the **Video Library ID**, the **API Key** and the **CDN Hostname** (for example `vz-abc123.b-cdn.net`).
-3. Add them to `server/.env`:
+2. On the library's **API** page, copy the **Video Library ID**, **API Key** and **CDN Hostname**.
+3. Add them to `server/.env` (for uploading) and set `BUNNY_CDN_HOSTNAME` on the deployed API (for playback):
 
    ```env
    BUNNY_LIBRARY_ID=123456
@@ -292,9 +192,7 @@ Only upload films you own or have the rights to distribute.
    BUNNY_CDN_HOSTNAME=vz-abc123.b-cdn.net
    ```
 
-   The API key can upload and delete videos. Keep it out of git and never put it in the client.
-
-4. Recommended: in the library's **Security** settings, add your site's domain to **Allowed Referrers** so other sites can't embed your streams.
+4. In the library's **Security** settings, add your site's domain to **Allowed Referrers** so other sites can't stream your films.
 
 ### Uploading films
 
@@ -305,13 +203,14 @@ npm run upload-films -- "D:\My Films"             # upload new .mp4/.mov/.mkv/.m
 npm run upload-films -- --status                  # encoding progress for each film
 ```
 
-- A film's title (and year, if the file name ends in one, e.g. `Night Shift (2024).mp4`) comes from its file name.
-- Each upload is saved to `server/films.json` as soon as it finishes, so re-running after an interruption only uploads what's missing. A failed upload is removed from Bunny automatically.
-- Bunny takes a few minutes to encode each film. Until then the player shows "may still be encoding".
+- The title, and the year if the file name ends in one (e.g. `Night Shift (2024).mp4`), come from the file name.
+- Each upload is saved to `server/films.json` as soon as it finishes, so re-running only uploads what's missing. A failed upload is removed from Bunny automatically.
+- Bunny takes a few minutes to encode each film. Until then the player says it may still be encoding.
+- **Commit and push `server/films.json`** after uploading. The deployed API is rebuilt from git, so that's how it learns about new films.
 
 ### Editing film details
 
-Edit `server/films.json` and restart the API. Each entry supports:
+Edit `server/films.json`, then restart the API (or push, for the deployed one):
 
 | Field | Meaning |
 | --- | --- |
@@ -322,28 +221,31 @@ Edit `server/films.json` and restart the API. Each entry supports:
 | `hidden` | `true` hides the film without deleting it |
 | `bunnyVideoId`, `fileName` | Set by the upload script; don't change |
 
-Artwork comes from Bunny's auto-generated thumbnail. To change it, pick a new thumbnail for the video in the Bunny dashboard.
-
-### Playback
-
-Self-hosted films play in Netflex's own player: native HLS in Safari and recent Chrome builds, hls.js elsewhere. It offers a quality picker when the stream has several renditions, and it remembers where each viewer stopped (stored in their browser), with a **Start over** option.
+Artwork comes from Bunny's auto-generated thumbnail; choose a different one in the Bunny dashboard.
 
 ## Deployment
 
-Deploy the Next.js frontend and Express API as separate services. Configure:
+The live site runs on two services, both deploying automatically from `main`:
 
-1. `NEXT_PUBLIC_API_URL` on the frontend to the publicly reachable API base URL, including `/api` (for example, `https://api.example.com/api`).
-2. `CLIENT_URL` on the API to the frontend origin (or comma-separated allowed origins).
-3. Clerk frontend keys and URLs in the frontend environment.
-4. A strong, private `JWT_SECRET` on the API, and `NODE_ENV=production`.
-5. Persistent storage or a database for API user data. The built-in JSON file is not suitable for ephemeral hosting filesystems.
+| Part | Host | Settings |
+| --- | --- | --- |
+| Frontend | Vercel project `netflex` | Root directory `client`, Node 22, `NEXT_PUBLIC_API_URL=https://netflex-api-uk1m.onrender.com/api` |
+| API | Render web service `netflex-api` | Build `cd server && npm ci --include=dev && npm run build`, start `cd server && npm start`, Node 22, `NODE_ENV=production`, `JWT_SECRET`, `CLIENT_URL=https://netflex-drab.vercel.app,http://localhost:3000` |
 
-For Vercel, deploy `client/` as the Next.js project and host `server/` on a Node.js service that can run the compiled API and provide persistent storage. The root `npm run build` builds both packages, but the Express server is not a substitute for hosting a Next.js server build.
+When the frontend moves to a new domain, add it to `CLIENT_URL` on Render.
+
+Render's free plan puts the API to sleep after about 15 minutes without traffic; the first request afterwards can take up to a minute.
 
 ## Troubleshooting
 
-- **Frontend cannot reach the API:** Confirm the API is running, `NEXT_PUBLIC_API_URL` includes `/api`, and `CLIENT_URL` permits the frontend origin. Restart Next.js after changing frontend environment variables.
-- **Clerk controls show a configuration error:** Check the Clerk publishable and secret keys in `client/.env.local`; restart the frontend after updating them.
-- **API auth fails in production:** Set `JWT_SECRET` explicitly and use the API-issued token as a bearer token. Clerk sessions are not API JWTs.
-- **Port already in use:** Change `PORT` for the API or edit the frontend dev/start port in `client/package.json`; keep the configured frontend URL and CORS origin aligned.
-- **Accounts disappear after deployment/restart:** Persist the API's `data/db.json` location or migrate the user store to a persistent database.
+- **"We can't reach the catalogue right now":** the API is down or waking up. Locally, start it with `npm run server:dev`; on Render, wait a minute and refresh.
+- **Site shows a Clerk error or redirects to clerk.accounts.dev:** the Clerk key in `client/.env.local` is invalid. Remove it (sign-in is optional) or replace it with a valid one.
+- **API exits with "JWT_SECRET must be set":** set `JWT_SECRET`, or `NODE_ENV=development` for local use.
+- **Browser console shows a CORS error:** add the site's exact origin (scheme + host, no trailing slash) to `CLIENT_URL` on the API and redeploy.
+- **Your films don't appear:** check that `server/films.json` is committed and `BUNNY_CDN_HOSTNAME` is set on the API. The API logs a warning when films exist but the host is missing.
+
+## License
+
+The Netflex source code is licensed under the [GNU Affero General Public License v3.0](LICENSE). If you run a modified version of Netflex as a website, you must make its source code available to its users.
+
+The licence covers the code only. Films in the catalogue keep their own licences (public domain or the Creative Commons licence shown on each title), and films you upload remain yours.
