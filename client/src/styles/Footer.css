@@ -1,49 +1,35 @@
-/* ===== Footer ===== */
 .footer {
-  padding: 50px 4% 60px;
+  padding: 48px var(--gutter) 40px;
+  border-top: 1px solid var(--line);
   color: var(--text-mute);
-}
-
-.footer__questions {
-  font-size: 16px;
-  color: var(--text-dim);
-  margin-bottom: 24px;
+  font-size: 0.9rem;
 }
 
 .footer__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  max-width: 780px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  margin-bottom: 28px;
 }
 
 .footer__col {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 12px;
-}
-
-.footer__col a {
-  font-size: 13px;
-  color: var(--text-mute);
-  transition: color 0.2s ease;
+  align-content: start;
 }
 
 .footer__col a:hover {
-  color: var(--text-dim);
+  color: #fff;
   text-decoration: underline;
 }
 
 .footer__note {
-  font-size: 12px;
-  color: #555;
-  max-width: 600px;
+  max-width: 720px;
+  line-height: 1.6;
+  margin-bottom: 12px;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 900px) {
-  .footer__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.footer__copy {
+  font-size: 0.8rem;
 }

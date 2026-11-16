@@ -1,55 +1,85 @@
 'use client';
 
-import type { HeroContent } from '@/types';
+import { useEffect, useState } from 'react';
+import type { FeaturedTitle } from '@/types';
+import { useBrowse } from './BrowseProvider';
+import { InfoIcon, PlayIcon } from './Icons';
 import '@/styles/Hero.css';
 
-interface HeroProps {
-  content: HeroContent;
-}
+const ROTATE_MS = 9000;
 
-const Hero = ({ content }: HeroProps) => {
-  const backgroundStyle = {
-    backgroundImage: `linear-gradient(180deg, rgba(20,20,20,0) 0%, rgba(20,20,20,0.7) 65%, #141414 100%), radial-gradient(ellipse at 30% 30%, #4a2b1f 0%, #1c0f0a 55%, #141414 100%)`,
-  };
+export default function Hero({ titles }: { titles: FeaturedTitle[] }) {
+  const { play, openDetails } = useBrowse();
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (titles.length < 2 || paused) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+    const timer = window.setInterval(() => setIndex((i) => (i + 1) % titles.length), ROTATE_MS);
+    return () => window.clearInterval(timer);
+  }, [titles.length, paused]);
+
+  if (!titles.length) return null;
+  const title = titles[index];
+  const art = title.posterUrl ?? title.imageUrl;
 
   return (
-    <section className="hero" style={backgroundStyle}>
-      <div className="hero__content">
-        <p className="hero__tag">{content.tag}</p>
-        <h2 className="hero__title">{content.title}</h2>
-        <p className="hero__meta">
-          <span className="match">{content.rating}% Match</span>
-          <span>{content.year}</span>
-          <span className="badge">{content.maturityRating}</span>
-          {content.seasons && <span>{content.seasons} Seasons</span>}
-          {content.isHD && <span className="hd">HD</span>}
+    <section
+      className="hero"
+      aria-roledescription="carousel"
+      aria-label="Featured titles"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Wide blurred backdrop built from the poster, so portrait art still fills the banner */}
+      <div className="hero__backdrop" style={{ backgroundImage: `url("${art}")` }} key={`bg-${title.id}`} />
+      <div className="hero__shade" />
+
+      <div className="hero__poster" key={`poster-${title.id}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={art} alt="" />
+      </div>
+
+      <div className="hero__content" key={`content-${title.id}`}>
+        <p className="hero__brand">
+          <span>N</span>ETFLEX&nbsp;OPEN
         </p>
-        <p className="hero__desc">{content.description}</p>
+        <h1 className="hero__title">{title.title}</h1>
+        <p className="hero__tagline">{title.tagline}</p>
+        <p className="hero__meta">
+          {title.year && <span>{title.year}</span>}
+          <span>{title.genres.slice(0, 3).join(' · ')}</span>
+          <span className="hero__license">{title.license}</span>
+        </p>
+        <p className="hero__desc">{title.description}</p>
         <div className="hero__buttons">
-          <button className="btn btn--play">
-            <svg viewBox="0 0 24 24">
-              <path d="M6 4l14 8-14 8V4z" fill="currentColor" />
-            </svg>
-            Play
+          <button className="btn btn--play" onClick={() => play(title)}>
+            <PlayIcon /> Play
           </button>
-          <button className="btn btn--info">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none" />
-              <path
-                d="M12 8v.01M11 11h1v5h1"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-              />
-            </svg>
-            More Info
+          <button className="btn btn--info" onClick={() => openDetails(title)}>
+            <InfoIcon /> More Info
           </button>
         </div>
       </div>
-      <div className="hero__age-badge">{content.maturityRating}</div>
+
+      <div className="hero__rating">{title.maturityRating === 'All' ? 'U' : `U/A ${title.maturityRating}`}</div>
+
+      {titles.length > 1 && (
+        <div className="hero__dots" role="tablist" aria-label="Choose featured title">
+          {titles.map((t, i) => (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={i === index}
+              aria-label={t.title}
+              className={`hero__dot ${i === index ? 'hero__dot--active' : ''}`}
+              onClick={() => setIndex(i)}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
-};
-
-export default Hero;
+}

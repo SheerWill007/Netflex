@@ -1,18 +1,48 @@
 export type MediaType = 'movie' | 'series';
 
+/** Where a title (or episode) streams from. Only openly licensed sources are allowed. */
+export interface StreamSource {
+  provider: 'archive';
+  /** Internet Archive item identifier, embeddable at https://archive.org/embed/<id> */
+  id: string;
+}
+
+export interface Episode {
+  id: string;
+  title: string;
+  source: StreamSource;
+}
+
 export interface Movie {
   id: string;
   title: string;
-  description?: string;
+  description: string;
+  /** Card artwork */
   imageUrl: string;
+  /** Large artwork for the hero banner and details view (falls back to imageUrl) */
+  posterUrl?: string;
   category: string;
-  rating: number;
+  genres: string[];
   year?: number;
-  maturityRating?: string;
-  seasons?: number;
-  duration?: string;
-  isHD: boolean;
+  maturityRating: string;
   type: MediaType;
+  /** Licence the title is distributed under, e.g. "Public domain" or "CC BY 3.0" */
+  license: string;
+  /** Required attribution for Creative Commons titles */
+  credit?: string;
+  /** Movies have a source; series have episodes */
+  source?: StreamSource;
+  episodes?: Episode[];
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  movies: Movie[];
+}
+
+export interface FeaturedTitle extends Movie {
+  tagline: string;
 }
 
 export interface UserPublic {
@@ -28,23 +58,4 @@ export interface StoredUser extends UserPublic {
 
 export interface DatabaseShape {
   users: StoredUser[];
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  movies: Movie[];
-}
-
-export interface HeroContent {
-  id: string;
-  title: string;
-  description: string;
-  tag: string;
-  imageUrl: string;
-  rating: number;
-  year: number;
-  maturityRating: string;
-  seasons?: number;
-  isHD: boolean;
 }

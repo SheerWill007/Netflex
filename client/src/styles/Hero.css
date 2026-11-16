@@ -1,133 +1,200 @@
-/* ===== Hero ===== */
 .hero {
   position: relative;
-  height: 88vh;
-  min-height: 480px;
-  background-size: cover;
-  background-position: center;
+  min-height: min(92vh, 900px);
   display: flex;
   align-items: center;
-  padding: 0 4%;
+  overflow: hidden;
+  isolation: isolate;
+  padding: calc(var(--nav-h) + 24px) var(--gutter) 140px;
+}
+
+.hero__backdrop {
+  position: absolute;
+  inset: -40px;
+  z-index: -3;
+  background-size: cover;
+  background-position: center 30%;
+  filter: blur(28px) saturate(1.2) brightness(0.55);
+  transform: scale(1.1);
+  animation: hero-fade 0.8s ease both;
+}
+
+.hero__shade {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(90deg, rgba(20, 20, 20, 0.92) 0%, rgba(20, 20, 20, 0.55) 45%, rgba(20, 20, 20, 0.1) 75%),
+    linear-gradient(180deg, rgba(20, 20, 20, 0) 60%, #141414 100%);
+}
+
+/* Sharp poster on the right, standing in for the hero character */
+.hero__poster {
+  position: absolute;
+  z-index: -1;
+  right: clamp(24px, 9vw, 180px);
+  top: calc(var(--nav-h) + 16px);
+  bottom: 120px;
+  aspect-ratio: 2 / 3;
+  max-width: 42vw;
+  animation: hero-rise 0.9s ease both;
+}
+
+.hero__poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .hero__content {
-  max-width: 620px;
-  padding-top: 40px;
+  max-width: 640px;
+  animation: hero-rise 0.7s ease both;
 }
 
-.hero__tag {
-  font-size: 13px;
-  letter-spacing: 3px;
+.hero__brand {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.3em;
   color: var(--text-dim);
-  margin-bottom: 12px;
-  text-transform: uppercase;
+}
+
+.hero__brand span {
+  color: var(--red);
+  font-size: 1.9rem;
 }
 
 .hero__title {
-  font-family: var(--font-display), "Bebas Neue", "Arial Narrow", sans-serif;
-  font-size: clamp(48px, 8vw, 88px);
-  line-height: 0.95;
-  letter-spacing: 1px;
-  margin-bottom: 18px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 400;
+  font-size: clamp(3.4rem, 9vw, 7.5rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  margin: 6px 0 18px;
+  color: #fff;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.hero__tagline {
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .hero__meta {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 15px;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 12px 0 10px;
   color: var(--text-dim);
-  margin-bottom: 16px;
+  font-size: 0.95rem;
 }
 
-.hero__meta .match {
-  color: #46d369;
-  font-weight: 700;
-}
-
-.hero__meta .badge {
-  border: 1px solid var(--text-mute);
-  padding: 1px 6px;
-  font-size: 12px;
-}
-
-.hero__meta .hd {
-  border: 1px solid var(--text-mute);
-  padding: 1px 6px;
-  font-size: 12px;
+.hero__license {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0 6px;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  line-height: 1.6;
 }
 
 .hero__desc {
-  font-size: 17px;
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
   line-height: 1.5;
-  color: var(--text);
-  margin-bottom: 24px;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-  max-width: 560px;
+  color: #f2f2f2;
+  max-width: 600px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .hero__buttons {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
 }
 
-.btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 24px;
-  font-size: 16px;
-  font-weight: 700;
-  border-radius: 4px;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-}
-
-.btn svg {
-  width: 22px;
-  height: 22px;
-}
-
-.btn--play {
-  background: var(--text);
-  color: #000;
-}
-
-.btn--play:hover {
-  background: rgba(255, 255, 255, 0.75);
-}
-
-.btn--info {
-  background: rgba(109, 109, 110, 0.6);
-  color: var(--text);
-}
-
-.btn--info:hover {
-  background: rgba(109, 109, 110, 0.4);
-}
-
-.hero__age-badge {
+.hero__rating {
   position: absolute;
-  right: 4%;
-  bottom: 14%;
-  border-left: 4px solid var(--text-mute);
-  padding: 6px 10px;
-  font-size: 15px;
-  background: rgba(36, 36, 36, 0.6);
+  right: 0;
+  bottom: 168px;
+  padding: 10px 64px 10px 16px;
+  background: rgba(51, 51, 51, 0.6);
+  border-left: 3px solid #dcdcdc;
+  font-size: 1.15rem;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 560px) {
+.hero__dots {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 120px;
+  display: flex;
+  gap: 8px;
+}
+
+.hero__dot {
+  width: 28px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  transition: background 0.2s ease, width 0.2s ease;
+}
+
+.hero__dot--active {
+  width: 44px;
+  background: #fff;
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@media (max-width: 900px) {
+  /* Stack the poster above the text instead of behind it */
   .hero {
-    height: 75vh;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding-bottom: 120px;
   }
-
-  .hero__buttons .btn {
-    padding: 9px 16px;
-    font-size: 14px;
+  .hero__poster {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    align-self: center;
+    height: min(42vh, 380px);
+    max-width: none;
+    margin-bottom: 24px;
   }
+  .hero__shade {
+    background: linear-gradient(180deg, rgba(20, 20, 20, 0.2) 0%, rgba(20, 20, 20, 0.75) 50%, #141414 100%);
+  }
+  .hero__rating {
+    bottom: auto;
+    top: calc(var(--nav-h) + 40px);
+    padding: 6px 16px 6px 12px;
+    font-size: 0.85rem;
+  }
+  .hero__dots {
+    bottom: 80px;
+  }
+}
 
-  .hero__desc {
-    font-size: 15px;
+@media (max-width: 480px) {
+  .btn {
+    padding: 12px 22px 12px 18px;
+    font-size: 1.05rem;
+  }
+  .hero__buttons {
+    gap: 10px;
   }
 }
