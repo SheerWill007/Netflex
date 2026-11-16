@@ -97,9 +97,9 @@ npm run install:all
 
 1. Create or download a logo (64x64px PNG recommended)
 2. Name it: `netflex.png`
-3. Place in: `/public/netflex.png`
+3. Place in: `client/public/netflex.png`
 
-See `/public/HOW-TO-ADD-LOGO.md` for details.
+See `client/public/HOW-TO-ADD-LOGO.md` for details.
 
 ## 🚀 Running the Application
 
@@ -331,7 +331,7 @@ After setup:
 - [ ] Dependencies installed
 - [ ] `server/.env` configured
 - [ ] `client/.env.local` configured
-- [ ] Logo added to `/public/netflex.png`
+- [ ] Logo added to `client/public/netflex.png`
 - [ ] Backend starts without errors
 - [ ] Frontend starts without errors
 - [ ] http://localhost:5000/api/health returns OK

@@ -61,7 +61,7 @@ npm run install:all
 
 ## Next Steps
 
-1. Add logo to `/public/netflex.png`
+1. Add logo to `client/public/netflex.png`
 2. Read `README.md`
 3. Start coding!
 

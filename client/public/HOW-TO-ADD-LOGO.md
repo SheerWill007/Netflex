@@ -15,14 +15,14 @@ This guide explains how to add a logo as your favicon.
    - Size: **64x64px**
 4. Download the generated `favicon.png`
 5. Rename it to `netflex.png`
-6. Replace the file in this folder (`/public/netflex.png`)
+6. Replace the file in this folder (`client/public/netflex.png`)
 
 ### Method B: Use Icon Libraries
 1. Visit: https://www.iconfinder.com/ or https://www.flaticon.com/
 2. Search for "streaming" or "video" icons
 3. Download a suitable icon (64x64px recommended)
 4. Rename to `netflex.png`
-5. Place in `/public/` folder
+5. Place in `client/public/` folder
 
 ## 🎨 Option 2: Create with Design Tools
 
@@ -31,7 +31,7 @@ This guide explains how to add a logo as your favicon.
 2. Background: #E50914 (red)
 3. Add white letter "N" in Bebas Neue font
 4. Export as PNG: `netflex.png`
-5. Save to `/public/` folder
+5. Save to `client/public/` folder
 
 ### Using Canva:
 1. Go to canva.com
@@ -39,7 +39,7 @@ This guide explains how to add a logo as your favicon.
 3. Background: #E50914
 4. Add text "N" in white
 5. Download as PNG
-6. Rename and add to `/public/`
+6. Rename and add to `client/public/`
 
 ## 🖼️ Option 3: Use Emoji or Unicode
 
@@ -115,7 +115,7 @@ Then update `client/index.html`:
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 ```
 
-And update `public/manifest.json`:
+And update `client/public/manifest.json`:
 
 ```json
 {
@@ -169,7 +169,7 @@ Always create your own variation or use generic streaming icons for public proje
 
 1. **Check file location**
    ```
-   netflex/public/netflex.png  ← Should be here
+   netflex/client/public/netflex.png  ← Should be here
    ```
 
 2. **Check file name** (case-sensitive)
@@ -192,7 +192,7 @@ Always create your own variation or use generic streaming icons for public proje
 
 ### Still Not Working?
 
-1. Restart Vite dev server
+1. Restart the Next.js dev server
    ```bash
    npm run client:dev
    ```
@@ -209,7 +209,7 @@ Always create your own variation or use generic streaming icons for public proje
 The project is already configured to use `/netflix.png`:
 
 - ✅ HTML updated in `client/index.html`
-- ✅ Vite configured to serve from `/public/`
+- ✅ Next.js serves files from `client/public/`
 - ✅ Manifest.json references the logo
 - ✅ All paths are correct
 

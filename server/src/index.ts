@@ -1,6 +1,7 @@
+// Must be the first import so .env is loaded before any module reads process.env.
+import 'dotenv/config';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import moviesRouter from './routes/movies';
@@ -9,8 +10,6 @@ import watchlistRouter from './routes/watchlist';
 import { SERVER_CONFIG, API_PREFIX } from './config/constants';
 import { errorHandler } from './utils/errorHandler';
 import { logger } from './utils/logger';
-
-dotenv.config();
 
 const app: Application = express();
 const PORT = SERVER_CONFIG.port;

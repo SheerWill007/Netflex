@@ -7,9 +7,10 @@ const isPublicRoute = createRouteMatcher([
   '/api(.*)',
 ]);
 
-export default clerkMiddleware(async (auth, request) => {
+export default clerkMiddleware((auth, request) => {
   if (!isPublicRoute(request)) {
-    await auth.protect();
+    // Clerk v5 API: auth() returns the auth object; protect() redirects or 404s.
+    auth().protect();
   }
 });
 

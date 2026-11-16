@@ -88,6 +88,12 @@ The Clerk session is not exchanged for an API JWT, and the frontend does not cur
 │       │   └── Row.tsx
 │       ├── lib/api.ts              Axios API client and catalogue functions
 │       ├── middleware.ts           Clerk route protection
+│   ├── public/                     Static files served by Next.js at /
+│   │   ├── HOW-TO-ADD-LOGO.md
+│   │   ├── netflex.png             App icon
+│   │   ├── manifest.json           Web app manifest
+│   │   ├── README.md
+│   │   └── robots.txt              Crawler rules
 │       ├── styles/
 │       │   ├── App.css
 │       │   ├── Footer.css
@@ -121,14 +127,6 @@ The Clerk session is not exchanged for an API JWT, and the frontend does not cur
 │   │   │   └── logger.ts
 │   │   └── index.ts                Express app, middleware, and startup
 │   └── tsconfig.json
-├── public/
-│   ├── .htaccess                   Static-host rewrite rules
-│   ├── _redirects                  Static-host redirect rules
-│   ├── HOW-TO-ADD-LOGO.md
-│   ├── netflex.png                 App icon
-│   ├── manifest.json               Web app manifest
-│   ├── README.md
-│   └── robots.txt                  Crawler rules
 ├── .gitignore
 ├── CLERK-QUICKSTART.md
 ├── CLERK-SETUP.md

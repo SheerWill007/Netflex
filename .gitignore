@@ -34,3 +34,6 @@ logs/
 # Next.js
 .next/
 out/
+
+# Local API user database (contains password hashes)
+server/data/

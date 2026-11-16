@@ -1,17 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 
-dotenv.config();
-
-const isProduction = process.env.NODE_ENV === 'production';
+const nodeEnv = process.env.NODE_ENV;
+const isLocalEnv = nodeEnv === 'development' || nodeEnv === 'test';
 const JWT_SECRET = process.env.JWT_SECRET;
 
-if (isProduction && !JWT_SECRET) {
-  throw new Error('JWT_SECRET must be configured in production');
+// Only an explicit development/test environment may fall back to a built-in secret.
+// If NODE_ENV is missing or anything else (e.g. a host that never sets it), refuse to
+// start: with a known secret anyone could forge login tokens.
+if (!JWT_SECRET && !isLocalEnv) {
+  throw new Error(
+    `JWT_SECRET must be set (NODE_ENV is "${nodeEnv ?? 'unset'}"). ` +
+    'Set JWT_SECRET, or set NODE_ENV=development for local use.'
+  );
 }
 
-// The fallback keeps local setup simple. Production always requires an explicit secret.
 const signingSecret = JWT_SECRET || 'development-only-secret';
 
 export interface AuthRequest extends Request {
